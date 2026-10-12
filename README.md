@@ -5,9 +5,10 @@ Sábado, 17 de outubro, às 19h30.
 
 ## O que tem no convite
 
-- Envelope que abre com confete quando a pessoa toca
+- O vídeo animado (`convite.mp4`) logo no topo, com botão pra tocar com som
 - Bolo com duas velinhas pra assoprar com o dedo (toca "Parabéns pra você" quando as duas apagam)
 - Contagem regressiva até a festa
+- A Moranguinho no rodapé acenando, piscando e com o chapéu balançando (toque nela!)
 - Data, horário e botão pra salvar na agenda
 
 ## Onde trocar as informações
@@ -47,6 +48,13 @@ npm install
 python3 scripts/trilha.py   # só se quiser regerar o áudio
 npm run studio              # abre o editor no navegador
 npm run render              # gera out/convite-valentina.mp4
+```
+
+Pra trocar o vídeo do convite depois de renderizar de novo:
+
+```bash
+ffmpeg -i video/out/convite-valentina.mp4 -vf scale=720:1280 -c:v libx264 -crf 25 -preset slow \
+  -movflags +faststart -c:a aac -b:a 128k convite.mp4
 ```
 
 `previa.png` é a imagem que aparece quando o link do convite é colado no WhatsApp.

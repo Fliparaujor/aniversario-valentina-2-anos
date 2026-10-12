@@ -6,7 +6,7 @@
 <title>Valentina faz 2</title>
 <meta name="description" content="Você está convidado pro aniversário de 2 anos da Valentina!">
 <meta property="og:title" content="Valentina faz 2 anos! 🍓">
-<meta property="og:description" content="Toque pra abrir o convite.">
+<meta property="og:description" content="Toque pra ver o convite animado da Valentina 🍓">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://fliparaujor.github.io/aniversario-valentina-2-anos/previa.png">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gluten:wght@500;700;800&family=Figtree:wght@400;600;800&display=swap">
 <style>
-/* Layout: uma coluna estreita como um cartão, envelope no topo, bolo interativo, depois contagem e detalhes.
+/* Layout: uma coluna estreita como um cartão. Vídeo no topo, depois detalhes, contagem, bolo interativo e a Moranguinho acenando.
    Tema Moranguinho: xadrez vichy rosa, vermelho morango, folhinha verde. Tema único (claro) de propósito, é um convite de papel. */
 :root {
   color-scheme: light;
@@ -71,92 +71,61 @@ p { margin: 0; }
 a { color: var(--berry-deep); }
 :focus-visible { outline: 3px solid var(--berry); outline-offset: 3px; border-radius: 8px; }
 
-/* ---------- envelope ---------- */
-.hero { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.eyebrow {
-  font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--berry-deep);
-}
-.envelope {
-  position: relative;
-  width: min(100%, 360px);
-  aspect-ratio: 3 / 2;
-  max-width: 100%;
-  margin-top: 70px;
-  border: 0; padding: 0; background: none; cursor: pointer;
-  perspective: 900px;
-}
-.env-back, .env-front, .env-flap { position: absolute; inset: 0; border-radius: 14px; }
-.env-back { background: var(--berry-deep); }
-.letter {
-  position: absolute; left: 7%; right: 7%; top: 8%; height: 86%;
-  background: var(--paper); border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(90,31,46,.15);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  transition: transform .9s cubic-bezier(.2,.9,.25,1.15) .35s;
-  z-index: 1;
-}
-.letter .mini { font-family: var(--display); font-size: clamp(22px, 7vw, 30px); color: var(--berry); }
-.letter .mini-sub { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
-.env-front {
-  z-index: 2;
-  background:
-    linear-gradient(to top right, var(--berry) 50%, transparent 50.5%) left / 50.5% 100% no-repeat,
-    linear-gradient(to top left, var(--berry) 50%, transparent 50.5%) right / 50.5% 100% no-repeat;
-  filter: drop-shadow(0 -1px 0 rgba(0,0,0,.05));
-}
-.env-front::after { /* aba de baixo */
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 60%;
-  background: linear-gradient(to bottom, transparent 0, transparent 0), var(--berry);
-  clip-path: polygon(0 100%, 50% 15%, 100% 100%);
-  border-radius: 0 0 14px 14px;
-  filter: brightness(1.06);
-}
-.env-flap {
-  z-index: 3;
-  height: 62%;
-  background-color: #F25C6E;
-  background-image:
-    linear-gradient(90deg, rgba(255,255,255,.28) 50%, transparent 50%),
-    linear-gradient(rgba(255,255,255,.28) 50%, transparent 50%);
-  background-size: 22px 22px;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  transform-origin: top center;
-  transition: transform .6s ease, z-index 0s .3s;
-}
-.seal {
-  position: absolute; z-index: 4; left: 50%; top: 52%;
-  width: 54px; height: 54px; margin: -27px 0 0 -27px;
-  border-radius: 50%; background: var(--paper);
-  display: grid; place-items: center;
-  box-shadow: 0 3px 0 rgba(90,31,46,.2);
-  transition: opacity .25s, transform .25s;
-}
-.envelope.open .env-flap { transform: rotateX(180deg); z-index: 0; }
-.envelope.open .seal { opacity: 0; transform: scale(.4); }
-.envelope.open .letter { transform: translateY(-58%); }
-.envelope:not(.open) { animation: wiggle 3.2s ease-in-out infinite; }
-@keyframes wiggle { 0%, 88%, 100% { transform: rotate(0) } 92% { transform: rotate(-3deg) } 96% { transform: rotate(3deg) } }
-.tap-hint { font-size: 14px; color: var(--ink-soft); font-weight: 600; min-height: 1.5em; }
-
+/* ---------- topo + vídeo ---------- */
+.hero { position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .title-name {
-  font-size: clamp(52px, 17vw, 88px);
+  font-size: clamp(52px, 16vw, 88px);
   color: var(--berry);
   letter-spacing: -.01em;
-  text-shadow: 3px 3px 0 var(--pink);
+  text-shadow: 3px 4px 0 var(--pink);
 }
-.title-age { font-size: clamp(22px, 6.5vw, 30px); color: var(--ink); }
+.title-age { font-size: clamp(22px, 6.5vw, 30px); color: var(--ink); font-family: var(--display); font-weight: 700; }
 .title-age b { color: var(--berry-deep); }
 .tema { display: inline-flex; align-items: center; gap: 8px; background: var(--leaf); color: #fff;
-  font-weight: 800; font-size: 15px; padding: 8px 16px; border-radius: 999px; }
+  font-weight: 800; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; border-radius: 999px;
+  box-shadow: 0 3px 0 #3E8436; }
 .tema svg { width: 20px; height: 22px; }
 
-/* morangos flutuando em volta do envelope */
-.hero { position: relative; }
+.video-frame {
+  position: relative;
+  width: min(100%, 340px);
+  aspect-ratio: 9 / 16;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 30px;
+  background-color: var(--berry);
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.3) 50%, transparent 50%),
+    linear-gradient(rgba(255,255,255,.3) 50%, transparent 50%);
+  background-size: 20px 20px;
+  box-shadow: 0 6px 0 var(--berry-deep), 0 18px 40px rgba(90,31,46,.22);
+}
+.video-frame video {
+  display: block; width: 100%; height: 100%;
+  border-radius: 22px; object-fit: cover; background: var(--bg);
+}
+.play {
+  position: absolute; inset: 10px; border: 0; border-radius: 22px; cursor: pointer;
+  background: linear-gradient(to bottom, rgba(90,31,46,0) 40%, rgba(90,31,46,.45));
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 12px;
+  padding-bottom: 34px; color: #fff; font: 800 18px/1.2 var(--body);
+}
+.play-btn {
+  width: 84px; height: 84px; border-radius: 50%; background: var(--berry);
+  display: grid; place-items: center; box-shadow: 0 5px 0 var(--berry-deep), 0 0 0 8px rgba(255,255,255,.55);
+  animation: pulsa 1.4s ease-in-out infinite;
+}
+.play-btn svg { width: 34px; height: 34px; margin-left: 5px; }
+.play span { text-shadow: 0 2px 6px rgba(0,0,0,.35); }
+@keyframes pulsa { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.08) } }
+.hint { font-size: 14px; color: var(--ink-soft); font-weight: 600; }
+
+/* morangos boiando em volta do topo */
 .float { position: absolute; width: 34px; height: 38px; pointer-events: none; animation: boia 4s ease-in-out infinite alternate; }
-.float.f1 { left: 2%; top: 30px; transform: rotate(-18deg); }
-.float.f2 { right: 4%; top: 6px; width: 26px; height: 29px; animation-delay: -1.5s; }
-.float.f3 { right: 0; top: 190px; width: 30px; height: 33px; animation-delay: -2.5s; }
-.float.f4 { left: 0; top: 230px; width: 22px; height: 24px; animation-delay: -.8s; }
+.float.f1 { left: 0; top: 4px; transform: rotate(-18deg); }
+.float.f2 { right: 2%; top: 0; width: 26px; height: 29px; animation-delay: -1.5s; }
+.float.f3 { right: -4px; top: 260px; width: 30px; height: 33px; animation-delay: -2.5s; }
+.float.f4 { left: -6px; top: 420px; width: 24px; height: 26px; animation-delay: -.8s; }
 @keyframes boia { from { translate: 0 0 } to { translate: 0 -10px } }
 
 /* ---------- cartões ---------- */
@@ -218,17 +187,31 @@ a { color: var(--berry-deep); }
 .fact dd { margin: 2px 0 0; font-weight: 600; min-width: 0; }
 .fact dd span { display: block; font-weight: 400; color: var(--ink-soft); font-size: 15px; }
 
-/* ---------- rodapé / música ---------- */
-.music {
-  position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 10;
-  width: 56px; height: 56px; border-radius: 50%; border: 0; cursor: pointer;
-  background: var(--berry); color: #fff; font-size: 24px;
-  box-shadow: 0 4px 0 var(--berry-deep), 0 8px 20px rgba(90,31,46,.2);
-}
-.music.playing { animation: bop .45s ease-in-out infinite alternate; }
-@keyframes bop { from { transform: translateY(0) rotate(-6deg) } to { transform: translateY(-4px) rotate(6deg) } }
-footer { text-align: center; font-family: var(--display); font-size: 20px; color: var(--berry); }
-footer small { display: block; font-family: var(--body); font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+/* ---------- Moranguinho no rodapé (camadas animadas) ---------- */
+footer { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+footer h2 { font-size: clamp(40px, 12vw, 56px); color: var(--berry); text-shadow: 3px 3px 0 var(--pink); }
+footer small { display: block; font-size: 14px; color: var(--ink-soft); margin-top: 4px; }
+.mg { position: relative; width: 310px; height: 465px; overflow: clip; border: 0; padding: 0; background: none; cursor: pointer; }
+.mg-cab, .mg-rig { display: block; }
+.mg-rig { position: absolute; left: 35px; top: 0; width: 887px; height: 1874px; transform-origin: 0 0; transform: scale(.248); }
+.mg-rig img { position: absolute; max-width: none; }
+.mg-be { left: 102.8px; top: 708px; width: 298.4px; height: 443.1px; transform-origin: 242.2px 60px; animation: bracoEsq 2.6s ease-in-out infinite alternate; }
+.mg-bd { left: 266.3px; top: 65.9px; width: 754px; height: 1508px; transform-origin: 381.7px 702.1px; animation: aceno .55s ease-in-out infinite alternate; }
+.mg-corpo { left: 0; top: 100px; width: 887px; height: 1774px; }
+.mg-cab { position: absolute; inset: 0; transform-origin: 500px 690px; animation: cabeca 3.4s ease-in-out infinite alternate; }
+.mg-rosto { left: 113px; top: 172px; width: 716.7px; height: 843.8px; }
+.mg-pisca { opacity: 0; animation: pisca 4.2s steps(1) infinite; }
+.mg-eba { opacity: 0; }
+.mg-chapeu { left: 159px; top: 17px; width: 665.25px; height: 1330.5px; transform-origin: 332.25px 360px; animation: chapeu 3.4s ease-in-out infinite alternate; animation-delay: -.25s; }
+.mg.eba .mg-eba { opacity: 1; }
+.mg.eba .mg-pisca { opacity: 0; animation: none; }
+.mg.eba .mg-rig { animation: pulo .5s ease-out; }
+@keyframes aceno { from { transform: rotate(-52deg) } to { transform: rotate(-86deg) } }
+@keyframes bracoEsq { from { transform: rotate(2deg) } to { transform: rotate(16deg) } }
+@keyframes cabeca { from { transform: rotate(-3deg) } to { transform: rotate(3deg) } }
+@keyframes chapeu { from { transform: rotate(3deg) } to { transform: rotate(9deg) } }
+@keyframes pisca { 0% { opacity: 0 } 93% { opacity: 1 } 97% { opacity: 0 } }
+@keyframes pulo { 0% { transform: scale(.248) } 30% { transform: translateY(-40px) scale(.236, .262) } 70% { transform: scale(.262, .232) } 100% { transform: scale(.248) } }
 
 #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
 
@@ -259,23 +242,50 @@ footer small { display: block; font-family: var(--body); font-size: 13px; color:
     <svg class="float f2" aria-hidden="true"><use href="#morango"/></svg>
     <svg class="float f3" aria-hidden="true"><use href="#morango"/></svg>
     <svg class="float f4" aria-hidden="true"><use href="#morango"/></svg>
-    <button class="envelope" id="envelope" type="button" aria-label="Abrir o convite">
-      <span class="env-back"></span>
-      <span class="letter">
-        <span class="mini" data-fill="nome">Valentina</span>
-        <span class="mini-sub">te convida 🍓</span>
-      </span>
-      <span class="env-front"></span>
-      <span class="env-flap"></span>
-      <span class="seal" aria-hidden="true"><svg width="30" height="33"><use href="#morango"/></svg></span>
-    </button>
-    <p class="tap-hint" id="tapHint">Toque no envelope pra abrir</p>
-
-    <p class="eyebrow">Você está convidado</p>
+    <p class="tema"><svg aria-hidden="true"><use href="#morango"/></svg>Festa da Moranguinho</p>
     <h1 class="title-name" data-fill="nome">Valentina</h1>
     <p class="title-age">vai fazer <b>2 aninhos</b>!</p>
-    <p class="tema"><svg aria-hidden="true"><use href="#morango"/></svg>Festa da Moranguinho</p>
+    <div class="video-frame">
+      <video id="video" src="convite.mp4" poster="poster.jpg" playsinline preload="metadata"></video>
+      <button class="play" id="play" type="button" aria-label="Assistir o convite com som">
+        <span class="play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#fff"/></svg></span>
+        <span id="playTxt">Toque pra assistir 🔊</span>
+      </button>
+    </div>
+    <p class="hint">Depois role pra baixo e assopre as velinhas 👇</p>
   </header>
+
+  <section class="card" aria-labelledby="cdTitle">
+    <h2 id="cdTitle">Falta pouquinho</h2>
+    <div class="countdown" id="countdown">
+      <div class="cd-cell"><div class="cd-num" id="cdD">0</div><div class="cd-lbl">dias</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdH">0</div><div class="cd-lbl">horas</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdM">0</div><div class="cd-lbl">min</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdS">0</div><div class="cd-lbl">seg</div></div>
+    </div>
+    <p class="cd-done" id="cdDone" hidden>É hoje! 🎉</p>
+  </section>
+
+  <section class="card" aria-labelledby="infoTitle">
+    <h2 id="infoTitle">Anota aí</h2>
+    <dl class="facts">
+      <div class="fact">
+        <div class="fact-ico" aria-hidden="true">📅</div>
+        <div><dt>Quando</dt><dd id="fQuando">Sábado</dd></div>
+      </div>
+      <div class="fact">
+        <div class="fact-ico" aria-hidden="true">⏰</div>
+        <div><dt>Horário</dt><dd id="fHora">16h</dd></div>
+      </div>
+      <div class="fact" id="factExtra">
+        <div class="fact-ico" aria-hidden="true">🍽️</div>
+        <div><dt>Comidinhas</dt><dd id="fExtra"></dd></div>
+      </div>
+    </dl>
+    <div class="btn-row">
+      <a class="btn ghost" id="calLink" href="#" target="_blank" rel="noopener">🗓️ Salvar na agenda</a>
+    </div>
+  </section>
 
   <section class="card cake-card" aria-labelledby="cakeTitle">
     <h2 id="cakeTitle">Faça um pedido<small>e assopre as velinhas (toque nelas)</small></h2>
@@ -318,45 +328,25 @@ footer small { display: block; font-family: var(--body); font-size: 13px; color:
     </div>
   </section>
 
-  <section class="card" aria-labelledby="cdTitle">
-    <h2 id="cdTitle">Falta pouquinho</h2>
-    <div class="countdown" id="countdown">
-      <div class="cd-cell"><div class="cd-num" id="cdD">0</div><div class="cd-lbl">dias</div></div>
-      <div class="cd-cell"><div class="cd-num" id="cdH">0</div><div class="cd-lbl">horas</div></div>
-      <div class="cd-cell"><div class="cd-num" id="cdM">0</div><div class="cd-lbl">min</div></div>
-      <div class="cd-cell"><div class="cd-num" id="cdS">0</div><div class="cd-lbl">seg</div></div>
-    </div>
-    <p class="cd-done" id="cdDone" hidden>É hoje! 🎉</p>
-  </section>
-
-  <section class="card" aria-labelledby="infoTitle">
-    <h2 id="infoTitle">Anota aí</h2>
-    <dl class="facts">
-      <div class="fact">
-        <div class="fact-ico" aria-hidden="true">📅</div>
-        <div><dt>Quando</dt><dd id="fQuando">Sábado</dd></div>
-      </div>
-      <div class="fact">
-        <div class="fact-ico" aria-hidden="true">⏰</div>
-        <div><dt>Horário</dt><dd id="fHora">16h</dd></div>
-      </div>
-      <div class="fact" id="factExtra">
-        <div class="fact-ico" aria-hidden="true">🍽️</div>
-        <div><dt>Comidinhas</dt><dd id="fExtra"></dd></div>
-      </div>
-    </dl>
-    <div class="btn-row">
-      <a class="btn ghost" id="calLink" href="#" target="_blank" rel="noopener">🗓️ Salvar na agenda</a>
-    </div>
-  </section>
-
   <footer>
-    Te esperamos! 🍓
+    <button class="mg" id="mg" type="button" aria-label="Moranguinho acenando. Toque nela!">
+      <span class="mg-rig" aria-hidden="true">
+        <img class="mg-be" src="img/braco-esquerdo.webp" alt="">
+        <img class="mg-bd" src="img/braco-direito.webp" alt="">
+        <img class="mg-corpo" src="img/corpo-sem-bracos.webp" alt="">
+        <span class="mg-cab">
+          <img class="mg-rosto" src="img/moranguinho-cabeca.webp" alt="">
+          <img class="mg-rosto mg-pisca" src="img/cabeca-piscando.webp" alt="">
+          <img class="mg-rosto mg-eba" src="img/cabeca-boca-aberta.webp" alt="">
+          <img class="mg-chapeu" src="img/moranguinho-chapeu.webp" alt="">
+        </span>
+      </span>
+    </button>
+    <h2>Te esperamos!</h2>
     <small id="assinatura">Com carinho, família da Valentina</small>
   </footer>
 </main>
 
-<button class="music" id="music" type="button" aria-label="Tocar Parabéns pra você" title="Tocar Parabéns pra você">♪</button>
 
 <script>
 /* =========================================================
@@ -434,15 +424,29 @@ function tick() {
   if (!raf) cx.clearRect(0, 0, cv.width, cv.height);
 }
 
-// ---------- envelope ----------
-const env = $("#envelope");
-env.addEventListener("click", () => {
-  if (env.classList.contains("open")) return;
-  env.classList.add("open");
-  env.setAttribute("aria-label", "Convite aberto");
-  $("#tapHint").textContent = "Oba! Role pra baixo 👇";
-  const r = env.getBoundingClientRect();
-  setTimeout(() => confete(r.left + r.width / 2, r.top + r.height / 3), 500);
+// ---------- vídeo ----------
+const video = $("#video"), play = $("#play");
+play.addEventListener("click", () => {
+  pararParabens();
+  video.muted = false;
+  video.controls = true;
+  video.play().then(() => { play.hidden = true; }).catch(() => { video.controls = true; play.hidden = true; });
+});
+video.addEventListener("ended", () => {
+  video.controls = false;
+  $("#playTxt").textContent = "Ver de novo 🔁";
+  play.hidden = false;
+  const r = video.getBoundingClientRect();
+  confete(r.left + r.width / 2, r.top + r.height / 3, 160);
+});
+
+// ---------- Moranguinho: toque nela ----------
+const mg = $("#mg");
+mg.addEventListener("click", () => {
+  mg.classList.remove("eba"); void mg.offsetWidth; mg.classList.add("eba");
+  const r = mg.getBoundingClientRect();
+  confete(r.left + r.width / 2, r.top + r.height / 4, 90);
+  clearTimeout(mg._t); mg._t = setTimeout(() => mg.classList.remove("eba"), 1300);
 });
 
 // ---------- velinhas ----------
@@ -495,7 +499,7 @@ function contar() {
 contar(); setInterval(contar, 1000);
 
 // ---------- Parabéns pra você (sintetizado) ----------
-let ac = null, tocando = false;
+let ac = null, tocando = false, fimParabens = 0;
 const N = { G4: 392, A4: 440, B4: 493.9, C5: 523.3, D5: 587.3, E5: 659.3, F5: 698.5, G5: 784 };
 // melodia em 3/4, duração em colcheias
 const MELODIA = [
@@ -508,7 +512,8 @@ function tocar() {
   if (tocando) return;
   try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
   ac.resume();
-  tocando = true; $("#music").classList.add("playing");
+  if (!video.paused) video.pause();
+  tocando = true;
   const beat = 0.22;
   let t = ac.currentTime + 0.05;
   for (const [n, d] of MELODIA) {
@@ -522,9 +527,12 @@ function tocar() {
     o.start(t); o.stop(t + dur);
     t += dur;
   }
-  setTimeout(() => { tocando = false; $("#music").classList.remove("playing"); }, (t - ac.currentTime) * 1000);
+  fimParabens = setTimeout(() => { tocando = false; }, (t - ac.currentTime) * 1000);
 }
-$("#music").addEventListener("click", tocar);
+function pararParabens() {
+  if (!tocando || !ac) return;
+  ac.suspend(); ac = null; tocando = false; clearTimeout(fimParabens);
+}
 </script>
 </body>
 </html>
