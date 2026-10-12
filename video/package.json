@@ -1,0 +1,20 @@
+{
+  "name": "valentina-2-anos-video",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Convite out/convite-valentina.mp4",
+    "still": "remotion still Convite out/capa.png --frame=200"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.528",
+    "@remotion/fonts": "4.0.528",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.528"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}

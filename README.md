@@ -35,3 +35,24 @@ const FESTA = {
 2. Em "Branch", escolha `main` e a pasta `/ (root)`, depois Save
 3. Em um ou dois minutos o convite fica em
    `https://fliparaujor.github.io/aniversario-valentina-2-anos/`
+
+## Vídeo (Remotion)
+
+Convite em vídeo de 20 segundos, vertical 1080x1920, pra Story e status do WhatsApp.
+Fica na pasta `video/`.
+
+- Textos do vídeo: `video/src/festa.ts`
+- Camadas da Moranguinho: `video/public/moranguinho/`
+- Trilha e efeitos sonoros são sintetizados por `video/scripts/trilha.py`
+  (valsa com "Parabéns pra você", melodia em domínio público)
+
+```bash
+cd video
+npm install
+python3 scripts/trilha.py   # só se quiser regerar o áudio
+npm run studio              # abre o editor no navegador
+npm run render              # gera out/convite-valentina.mp4
+```
+
+`previa.png` é a imagem que aparece quando o link do convite é colado no WhatsApp.
+Pra regerar: `cd video && npx remotion still Previa ../previa.png`.
