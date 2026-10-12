@@ -11,7 +11,7 @@ export const M = {
   pouso: 24,
   selo: 44,
   encolhe: 93,
-  placas: [100, 118, 136],
+  placas: [100, 120],
   sobe: 178,
   final: 186,
   chamada: 204,
@@ -174,18 +174,11 @@ export const Palco: React.FC = () => {
       </div>
 
       {/* plaquinhas com as informações */}
-      <Placa f={f} t0={M.placas[2]} alvo={770} sobe={M.sobe + 8}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "0 30px", textAlign: "center" }}>
-          <span style={{ fontFamily: display, fontWeight: 800, fontSize: 76, color: C.berry, lineHeight: 1.05 }}>{FESTA.local}</span>
-          <span style={{ fontFamily: body, fontWeight: 600, fontSize: 40, color: C.inkSoft }}>{FESTA.endereco}</span>
-        </div>
-      </Placa>
-
-      <Placa f={f} t0={M.placas[1]} alvo={470} sobe={M.sobe + 4}>
+      <Placa f={f} t0={M.placas[1]} alvo={560} sobe={M.sobe + 4}>
         <span style={{ fontFamily: body, fontWeight: 800, fontSize: 64, letterSpacing: "0.08em", color: C.inkSoft }}>ÀS</span>
         <span style={{ fontFamily: display, fontWeight: 800, fontSize: 130, color: C.berry }}>{FESTA.hora}</span>
       </Placa>
-      <Placa f={f} t0={M.placas[0]} alvo={170} sobe={M.sobe}>
+      <Placa f={f} t0={M.placas[0]} alvo={240} sobe={M.sobe}>
         <span style={{ fontFamily: body, fontWeight: 800, fontSize: 64, letterSpacing: "0.08em", color: C.inkSoft }}>{FESTA.diaSemana}</span>
         <span style={{ fontFamily: display, fontWeight: 800, fontSize: 118, color: C.berry, fontVariantNumeric: "tabular-nums" }}>
           {String(dia).padStart(2, "0")}/{FESTA.mes}
@@ -231,13 +224,13 @@ export const Palco: React.FC = () => {
             color: "#FFF",
             fontFamily: body,
             fontWeight: 800,
-            fontSize: 46,
-            padding: "22px 44px",
+            fontSize: 58,
+            padding: "24px 52px",
             borderRadius: 999,
             boxShadow: `0 10px 0 ${C.berryDeep}`,
           }}
         >
-          {FESTA.chamada}
+          {FESTA.diaSemana.charAt(0) + FESTA.diaSemana.slice(1).toLowerCase()}, {FESTA.dia}/{FESTA.mes} às {FESTA.hora}
         </div>
       </div>
     </AbsoluteFill>

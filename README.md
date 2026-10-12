@@ -8,8 +8,7 @@ Sábado, 17 de outubro, às 19h30.
 - Envelope que abre com confete quando a pessoa toca
 - Bolo com duas velinhas pra assoprar com o dedo (toca "Parabéns pra você" quando as duas apagam)
 - Contagem regressiva até a festa
-- Data, horário, local, botão pro Google Maps e pra salvar na agenda
-- Confirmação de presença que abre o WhatsApp com a mensagem pronta
+- Data, horário e botão pra salvar na agenda
 
 ## Onde trocar as informações
 
@@ -20,11 +19,7 @@ const FESTA = {
   nome: "Valentina",
   inicio: "2026-10-17T19:30:00-03:00",
   fim: "",                 // deixe "" pra não mostrar horário de término
-  local: "...",
-  endereco: "...",
   comida: "...",           // deixe "" pra esconder
-  whatsapp: "55DDDNUMERO", // só números, com 55 e DDD
-  prazoRsvp: "",           // ex.: "até quinta, 15/10"
   assinatura: "..."
 };
 ```

@@ -6,7 +6,7 @@
 <title>Valentina faz 2</title>
 <meta name="description" content="Você está convidado pro aniversário de 2 anos da Valentina!">
 <meta property="og:title" content="Valentina faz 2 anos! 🍓">
-<meta property="og:description" content="Toque pra abrir o convite e confirmar presença.">
+<meta property="og:description" content="Toque pra abrir o convite.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://fliparaujor.github.io/aniversario-valentina-2-anos/previa.png">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gluten:wght@500;700;800&family=Figtree:wght@400;600;800&display=swap">
 <style>
-/* Layout: uma coluna estreita como um cartão, envelope no topo, bolo interativo, depois detalhes e RSVP.
+/* Layout: uma coluna estreita como um cartão, envelope no topo, bolo interativo, depois contagem e detalhes.
    Tema Moranguinho: xadrez vichy rosa, vermelho morango, folhinha verde. Tema único (claro) de propósito, é um convite de papel. */
 :root {
   color-scheme: light;
@@ -197,8 +197,6 @@ a { color: var(--berry-deep); }
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--berry-deep); }
 .btn.ghost { background: var(--paper); color: var(--ink); box-shadow: 0 0 0 2px var(--line) inset, 0 4px 0 var(--line); }
 .btn.ghost:active { box-shadow: 0 0 0 2px var(--line) inset, 0 1px 0 var(--line); }
-.btn.wa { background: #1FA855; box-shadow: 0 4px 0 #157A3D; width: 100%; font-size: 17px; padding: 17px 20px; }
-.btn.wa:active { box-shadow: 0 1px 0 #157A3D; }
 .btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
 
 /* ---------- contagem ---------- */
@@ -219,36 +217,6 @@ a { color: var(--berry-deep); }
 .fact dt { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
 .fact dd { margin: 2px 0 0; font-weight: 600; min-width: 0; }
 .fact dd span { display: block; font-weight: 400; color: var(--ink-soft); font-size: 15px; }
-
-/* ---------- RSVP ---------- */
-.field { display: flex; flex-direction: column; gap: 6px; }
-.field label, .field .lbl { font-size: 14px; font-weight: 800; color: var(--ink); }
-input[type="text"], textarea {
-  font: 400 17px/1.4 var(--body); color: var(--ink);
-  border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--paper);
-  width: 100%;
-}
-input[type="text"]:focus, textarea:focus { border-color: var(--berry); outline: none; }
-textarea { resize: vertical; min-height: 76px; }
-.choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.choice input { position: absolute; opacity: 0; pointer-events: none; }
-.choice label {
-  border: 2px solid var(--line); border-radius: 14px; padding: 12px 10px; text-align: center;
-  font-weight: 800; cursor: pointer; font-size: 15px; background: var(--paper);
-}
-.choice input:checked + label { border-color: var(--berry); background: var(--pink-soft); color: var(--berry-deep); }
-.choice input:focus-visible + label { outline: 3px solid var(--berry); outline-offset: 2px; }
-.steppers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.stepper { border: 2px solid var(--line); border-radius: 14px; padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.stepper .lbl { font-size: 13px; }
-.stepper-ctl { display: flex; align-items: center; gap: 10px; }
-.stepper button {
-  width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
-  background: var(--bg); color: var(--berry-deep); font: 800 20px/1 var(--body);
-}
-.stepper output { font-family: var(--display); font-size: 26px; min-width: 1.4ch; text-align: center; font-variant-numeric: tabular-nums; }
-.going-only[hidden] { display: none !important; }
-.fine { font-size: 13px; color: var(--ink-soft); text-align: center; }
 
 /* ---------- rodapé / música ---------- */
 .music {
@@ -372,65 +340,14 @@ footer small { display: block; font-family: var(--body); font-size: 13px; color:
         <div class="fact-ico" aria-hidden="true">⏰</div>
         <div><dt>Horário</dt><dd id="fHora">16h</dd></div>
       </div>
-      <div class="fact">
-        <div class="fact-ico" aria-hidden="true">📍</div>
-        <div><dt>Onde</dt><dd id="fLocal">Local</dd></div>
-      </div>
       <div class="fact" id="factExtra">
         <div class="fact-ico" aria-hidden="true">🍽️</div>
         <div><dt>Comidinhas</dt><dd id="fExtra"></dd></div>
       </div>
     </dl>
     <div class="btn-row">
-      <a class="btn ghost" id="mapsLink" href="#" target="_blank" rel="noopener">📍 Ver no mapa</a>
       <a class="btn ghost" id="calLink" href="#" target="_blank" rel="noopener">🗓️ Salvar na agenda</a>
     </div>
-  </section>
-
-  <section class="card" aria-labelledby="rsvpTitle">
-    <h2 id="rsvpTitle">Vem com a gente?<small id="rsvpPrazo">Confirme sua presença</small></h2>
-    <form id="rsvp" novalidate>
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="field">
-          <label for="rsvpNome">Seu nome</label>
-          <input type="text" id="rsvpNome" name="nome" autocomplete="name" placeholder="Ex.: Tia Carla" required>
-        </div>
-        <div class="field">
-          <span class="lbl" id="vaiLbl">Você vai?</span>
-          <div class="choice" role="radiogroup" aria-labelledby="vaiLbl">
-            <input type="radio" name="vai" id="vaiSim" value="sim" checked><label for="vaiSim">Vou sim! 🥳</label>
-            <input type="radio" name="vai" id="vaiNao" value="nao"><label for="vaiNao">Não vou poder 😢</label>
-          </div>
-        </div>
-        <div class="field going-only" id="qtdBox">
-          <span class="lbl">Quantas pessoas?</span>
-          <div class="steppers">
-            <div class="stepper">
-              <span class="lbl">Adultos</span>
-              <div class="stepper-ctl">
-                <button type="button" data-step="adultos" data-d="-1" aria-label="Menos um adulto">−</button>
-                <output id="adultos" aria-live="polite">1</output>
-                <button type="button" data-step="adultos" data-d="1" aria-label="Mais um adulto">+</button>
-              </div>
-            </div>
-            <div class="stepper">
-              <span class="lbl">Crianças</span>
-              <div class="stepper-ctl">
-                <button type="button" data-step="criancas" data-d="-1" aria-label="Menos uma criança">−</button>
-                <output id="criancas" aria-live="polite">0</output>
-                <button type="button" data-step="criancas" data-d="1" aria-label="Mais uma criança">+</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <label for="rsvpMsg">Um recadinho pra Valentina <span style="font-weight:400;color:var(--ink-soft)">(opcional)</span></label>
-          <textarea id="rsvpMsg" name="msg" placeholder="Parabéns, pequena!"></textarea>
-        </div>
-        <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">Enviar pelo WhatsApp</a>
-        <p class="fine" id="waHint">Escreva seu nome pra liberar o botão.</p>
-      </div>
-    </form>
   </section>
 
   <footer>
@@ -451,14 +368,8 @@ const FESTA = {
   inicio: "2026-10-17T19:30:00-03:00",
   // horário de término: deixe "" se não quiser mostrar (a agenda usa 3h de duração)
   fim: "",
-  local: "Nome do salão de festas",
-  endereco: "Rua Exemplo, 123, Bairro, Cidade",
   // aparece em "Anota aí". Deixe "" pra esconder
   comida: "Vem com fome: vai ter jantar, salgadinhos, docinhos e lanches.",
-  // WhatsApp de quem recebe as confirmações: só números, com DDI 55 + DDD
-  whatsapp: "5500000000000",
-  // ex.: "até quinta, 15/10". Deixe "" pra não mostrar prazo
-  prazoRsvp: "",
   assinatura: "Com carinho, família da Valentina"
 };
 /* ========================================================= */
@@ -476,20 +387,14 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const horaBR = (d) => fmtHora.format(d).replace(":00", "h").replace(":", "h");
 $("#fQuando").textContent = cap(fmtDia.format(inicio));
 $("#fHora").textContent = FESTA.fim ? "das " + horaBR(inicio) + " às " + horaBR(fim) : "às " + horaBR(inicio);
-$("#fLocal").innerHTML = "";
-$("#fLocal").append(FESTA.local, Object.assign(document.createElement("span"), { textContent: FESTA.endereco }));
 if (FESTA.comida) $("#fExtra").textContent = FESTA.comida; else $("#factExtra").hidden = true;
-$("#rsvpPrazo").textContent = "Confirme sua presença" + (FESTA.prazoRsvp ? " " + FESTA.prazoRsvp : "");
 $("#assinatura").textContent = FESTA.assinatura;
-$("#rsvpMsg").previousElementSibling.firstChild.textContent = "Um recadinho pra " + FESTA.nome + " ";
 
-// ---------- links: mapa e agenda ----------
-$("#mapsLink").href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(FESTA.local + ", " + FESTA.endereco);
+// ---------- link da agenda ----------
 const gcal = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 $("#calLink").href = "https://calendar.google.com/calendar/render?action=TEMPLATE"
   + "&text=" + encodeURIComponent("Aniversário de 2 anos da " + FESTA.nome)
   + "&dates=" + gcal(inicio) + "/" + gcal(fim)
-  + "&location=" + encodeURIComponent(FESTA.local + ", " + FESTA.endereco)
   + "&details=" + encodeURIComponent(FESTA.comida || "");
 
 // ---------- confete ----------
@@ -588,38 +493,6 @@ function contar() {
   $("#cdM").textContent = String(m).padStart(2, "0"); $("#cdS").textContent = String(s).padStart(2, "0");
 }
 contar(); setInterval(contar, 1000);
-
-// ---------- RSVP pelo WhatsApp ----------
-const qtd = { adultos: 1, criancas: 0 };
-document.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => {
-  const k = b.dataset.step, min = k === "adultos" ? 1 : 0;
-  qtd[k] = Math.max(min, Math.min(15, qtd[k] + Number(b.dataset.d)));
-  $("#" + k).textContent = qtd[k];
-  montarWa();
-}));
-function montarWa() {
-  const nome = $("#rsvpNome").value.trim();
-  const vai = $("#vaiSim").checked;
-  $("#qtdBox").hidden = !vai;
-  const btn = $("#waBtn");
-  if (!nome) { btn.setAttribute("aria-disabled", "true"); btn.href = "#"; $("#waHint").textContent = "Escreva seu nome pra liberar o botão."; return; }
-  let txt;
-  if (vai) {
-    const p = [qtd.adultos + (qtd.adultos === 1 ? " adulto" : " adultos")];
-    if (qtd.criancas) p.push(qtd.criancas + (qtd.criancas === 1 ? " criança" : " crianças"));
-    txt = "Oi! Aqui é " + nome + ". Confirmo presença no aniversário de 2 anos da " + FESTA.nome + " 🎂\nVamos: " + p.join(" e ") + ".";
-  } else {
-    txt = "Oi! Aqui é " + nome + ". Infelizmente não vou conseguir ir no aniversário da " + FESTA.nome + " 😢";
-  }
-  const msg = $("#rsvpMsg").value.trim();
-  if (msg) txt += "\nRecadinho pra " + FESTA.nome + ": " + msg;
-  btn.href = "https://wa.me/" + FESTA.whatsapp.replace(/\D/g, "") + "?text=" + encodeURIComponent(txt);
-  btn.removeAttribute("aria-disabled");
-  $("#waHint").textContent = "Abre o WhatsApp com a mensagem pronta, é só enviar.";
-}
-["input", "change"].forEach(ev => $("#rsvp").addEventListener(ev, montarWa));
-$("#rsvp").addEventListener("submit", (e) => e.preventDefault());
-montarWa();
 
 // ---------- Parabéns pra você (sintetizado) ----------
 let ac = null, tocando = false;
