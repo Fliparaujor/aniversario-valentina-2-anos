@@ -77,7 +77,7 @@ export const Nome: React.FC = () => {
           transform: `translateY(${(1 - sub) * 40}px)`,
         }}
       >
-        PRO ANIVERSÁRIO DA
+        ANIVERSÁRIO DA
       </div>
       <div
         style={{
