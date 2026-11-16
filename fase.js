@@ -113,6 +113,9 @@ const byId = (id) => document.getElementById(id);
 const arcade = byId("arcade");
 const stage = byId("stage");
 const canvas = stage.getContext("2d", { alpha: false });
+const result = byId("result");
+const finaleCanvas = byId("finale-art");
+const finaleContext = finaleCanvas.getContext("2d");
 const hud = byId("hud");
 const controls = byId("controls");
 const controlButtons = [...controls.querySelectorAll("[data-input]")];
@@ -126,6 +129,8 @@ const landscape = new Image();
 landscape.src = "assets/green-hill.png";
 const parkAtlas = new Image();
 parkAtlas.src = "assets/praca-sprites.png";
+const finaleAtlas = new Image();
+finaleAtlas.src = "assets/chegada-josue.png";
 
 function soundFile(path, volume, loop = false) {
   const audio = new Audio(path);
@@ -152,6 +157,7 @@ let camera = 0;
 let revealUntil = 0;
 let clock = 0;
 let finishTime = 0;
+let finaleFrame = -1;
 let finishFrom = 0;
 let burstIndex = 0;
 let bursts = [];
@@ -205,9 +211,10 @@ function setState(next) {
   arcade.dataset.state = next;
   byId("intro").hidden = next !== "intro";
   controls.hidden = next !== "playing";
-  hud.hidden = !["playing", "celebrating"].includes(next);
+  hud.hidden = next !== "playing";
   byId("skip").hidden = !["intro", "playing"].includes(next);
-  byId("result").hidden = next !== "finished";
+  result.hidden = next !== "finished";
+  byId("result-card").hidden = next !== "finished";
   byId("actions").hidden = next !== "finished";
 }
 
@@ -711,6 +718,30 @@ function drawBursts() {
   canvas.globalAlpha = 1;
 }
 
+function drawFinale() {
+  const delay = .76;
+  if (state !== "finished" && (state !== "celebrating" || finishTime < delay)) return;
+  result.hidden = false;
+  if (!finaleAtlas.naturalWidth || !finaleContext) return;
+
+  const t = Math.max(0, finishTime - delay);
+  let index = 15;
+  if (!reducedMotion) {
+    if (t < .47) index = Math.min(9, Math.floor(t * 24));
+    else if (t < 1.12) index = Math.min(14, 10 + Math.floor((t - .47) / .13));
+    else index = 15 + (Math.floor((t - 1.12) * 4.6) % 2);
+  }
+  if (index === finaleFrame) return;
+
+  const { width, height } = finaleCanvas;
+  const columns = 4;
+  finaleContext.clearRect(0, 0, width, height);
+  finaleContext.drawImage(finaleAtlas, (index % columns) * width, Math.floor(index / columns) * height,
+    width, height, 0, 0, width, height);
+  finaleCanvas.hidden = false;
+  finaleFrame = index;
+}
+
 function draw() {
   const reserve = clamp(Math.round(stage.height * .071), 17, 29);
   const offset = stage.height - HEIGHT - reserve;
@@ -740,6 +771,7 @@ function draw() {
   drawPlayer(player.x - cam, player.y);
   canvas.restore();
   drawBursts();
+  drawFinale();
 }
 
 function sizeStage() {

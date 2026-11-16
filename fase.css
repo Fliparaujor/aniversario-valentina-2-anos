@@ -151,13 +151,13 @@ canvas:focus, h2:focus { outline: none; }
   border: 2px solid var(--gold);
   transform: rotate(45deg);
 }
-.intro h1, .result h2 {
+.intro h1 {
   margin: 0;
   font-family: var(--pixel);
   font-weight: 850;
   text-transform: uppercase;
 }
-.intro h1 span, .result h2 span { display: block; letter-spacing: .04em; }
+.intro h1 span { display: block; letter-spacing: .04em; }
 .intro h1 span {
   font-size: clamp(20px, 5.4vw, 49px);
   line-height: 1.08;
@@ -217,7 +217,7 @@ canvas:focus, h2:focus { outline: none; }
   border-bottom: .27em solid transparent;
   border-left: .42em solid #183379;
 }
-.skip, .replay {
+.skip {
   padding: 5px 12px;
   min-height: 44px;
   border: 0;
@@ -407,15 +407,57 @@ canvas:focus, h2:focus { outline: none; }
 .result {
   position: absolute;
   z-index: 3;
-  top: calc(var(--safe-top) + clamp(64px, 12dvh, 135px));
+  top: calc(var(--safe-top) + clamp(52px, 7dvh, 98px));
   left: 50%;
-  width: min(calc(100% - 2 * var(--pad-x)), 690px);
-  padding: clamp(11px, 2.4vw, 24px);
+  width: min(calc(100% - 2 * var(--pad-x)), 625px);
+  display: grid;
+  justify-items: center;
+  gap: clamp(5px, 1dvh, 11px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.event-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.result-mark {
+  position: relative;
+  width: min(100%, 460px, 48dvh);
+  aspect-ratio: 256 / 170;
+  transition: width 220ms ease-out;
+}
+[data-state="finished"] .result-mark { width: min(90%, 374px, 38dvh); }
+.result-mark canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 5px #080d3477);
+}
+.finale-fallback {
+  position: absolute;
+  inset: 35% 0 auto;
+  padding: 6px 8px;
+  clip-path: var(--corners);
+  background: #bc2142;
+  color: var(--gold);
+  font: 900 clamp(38px, 10vw, 80px)/1 var(--pixel);
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 2px 3px #401749;
+}
+.result-mark canvas:not([hidden]) + .finale-fallback { display: none; }
+.result-card {
+  width: min(100%, 550px);
+  padding: clamp(9px, 2.3vw, 18px);
   clip-path: var(--corners);
   border-top: 3px solid var(--gold);
   border-bottom: 3px solid #284d94;
   background: #091947f2;
-  transform: translateX(-50%);
 }
 .result-kicker {
   display: inline-block;
@@ -426,20 +468,11 @@ canvas:focus, h2:focus { outline: none; }
   font: 850 clamp(11px, 2.9vw, 22px)/1 var(--pixel);
   text-transform: uppercase;
 }
-.result h2 span { color: white; font-size: clamp(13px, 3.5vw, 25px); line-height: 1; }
-.result h2 strong {
-  display: block;
-  color: var(--gold);
-  font-size: clamp(38px, 10vw, 80px);
-  line-height: .93;
-  letter-spacing: -.075em;
-  text-shadow: 2px 3px #ad3e23;
-}
 .event-details {
   display: grid;
   grid-template-columns: 1.26fr .74fr;
-  gap: 7px 12px;
-  margin: 10px 0 0;
+  gap: 6px 12px;
+  margin: 0;
 }
 .event-details div { padding-top: 5px; border-top: 1px solid #587eb9; }
 .event-details .location { grid-column: 1 / -1; }
@@ -465,10 +498,6 @@ canvas:focus, h2:focus { outline: none; }
   grid-template-columns: 1.1fr 1fr;
   gap: 6px 8px;
   transform: translateX(-50%);
-}
-.result-actions .replay {
-  padding-inline: 6px;
-  text-shadow: 1px 1px #081537, 2px 2px #081537;
 }
 .gift-action {
   background: linear-gradient(#82e5f6 0 2px, #2362a7 2px calc(100% - 4px), #142a66 calc(100% - 4px));
@@ -564,13 +593,13 @@ canvas:focus, h2:focus { outline: none; }
   .clue strong { font-size: clamp(19px, 7dvh, 46px); }
   .result {
     left: max(4vw, calc(var(--safe-left) + 12px));
-    top: calc(var(--safe-top) + clamp(52px, 11dvh, 95px));
+    top: calc(var(--safe-top) + clamp(46px, 9dvh, 77px));
     width: min(49vw, 590px);
-    padding: clamp(8px, 2dvh, 17px);
     transform: none;
   }
-  .result h2 span { font-size: clamp(13px, 4dvh, 23px); }
-  .result h2 strong { font-size: clamp(30px, 12dvh, 69px); }
+  .result-mark { width: min(100%, 362px, 52dvh); }
+  [data-state="finished"] .result-mark { width: min(88%, 328px, 41dvh); }
+  .result-card { padding: clamp(7px, 2dvh, 16px); }
   .event-details dd { font-size: clamp(13px, 4.45dvh, 29px); }
   .event-details dt { font-size: clamp(9px, 2.8dvh, 19px); }
   .result-actions {
@@ -579,19 +608,18 @@ canvas:focus, h2:focus { outline: none; }
     transform: none;
   }
   .result-actions .button { min-height: 36px; font-size: clamp(11px, 3.5dvh, 24px); }
-  .result-actions .replay { min-height: 34px; font-size: clamp(11px, 3.4dvh, 22px); }
 }
 @media (max-height: 610px) and (orientation: portrait) {
   .intro { padding-top: calc(var(--safe-top) + 58px); }
   .intro h1 strong { font-size: clamp(56px, 17vw, 112px); }
-  .result { top: calc(var(--safe-top) + 56px); padding: 9px 11px; }
-  .result h2 strong { font-size: clamp(33px, 8vw, 58px); }
-  .event-details { margin-top: 6px; gap: 5px 10px; }
+  .result { top: calc(var(--safe-top) + 53px); }
+  [data-state="finished"] .result-mark { width: min(90%, 34dvh); }
+  .event-details { gap: 5px 10px; }
 }
 @media (max-width: 340px) {
   .controller, .direction, .move-actions { gap: 6px; }
   .control.arrow { width: 50px; height: 50px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .clue { transition: none; }
+  .clue, .result-mark { transition: none; }
 }

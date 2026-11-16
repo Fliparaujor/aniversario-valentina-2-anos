@@ -20,8 +20,8 @@
   <link rel="canonical" href="https://fliparaujor.github.io/josue/">
   <link rel="icon" href="assets/icone.png" type="image/png">
   <link rel="preload" href="assets/bitcount.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="fase.css?v=3">
-  <script src="fase.js?v=3" defer></script>
+  <link rel="stylesheet" href="fase.css?v=4">
+  <script src="fase.js?v=4" defer></script>
 </head>
 <body>
   <main class="arcade" id="arcade" data-state="intro">
@@ -76,22 +76,26 @@
     </div>
 
     <section class="result" id="result" aria-labelledby="event-title" hidden>
-      <p class="result-kicker" id="result-kicker">Fase concluída!</p>
-      <h2 id="event-title" tabindex="-1"><span>Aniversário do</span><strong>Josué</strong></h2>
-      <dl class="event-details">
-        <div><dt>Dia</dt><dd><time datetime="2026-11-22">Domingo, 22/11</time></dd></div>
-        <div><dt>Hora</dt><dd><time datetime="2026-11-22T17:00:00-03:00">17h</time></dd></div>
-        <div class="location"><dt>Local</dt><dd>Praça do Meio do Mundo <span>Macapá, AP</span></dd></div>
-      </dl>
+      <h2 class="event-title" id="event-title" tabindex="-1">Aniversário do Josué</h2>
+      <div class="result-mark" aria-hidden="true">
+        <canvas id="finale-art" width="256" height="170" hidden></canvas>
+        <span class="finale-fallback">Josué</span>
+      </div>
+      <div class="result-card" id="result-card" hidden>
+        <p class="result-kicker" id="result-kicker">Fase concluída!</p>
+        <dl class="event-details">
+          <div><dt>Dia</dt><dd><time datetime="2026-11-22">Domingo, 22/11</time></dd></div>
+          <div><dt>Hora</dt><dd><time datetime="2026-11-22T17:00:00-03:00">17h</time></dd></div>
+          <div class="location"><dt>Local</dt><dd>Praça do Meio do Mundo <span>Macapá, AP</span></dd></div>
+        </dl>
+      </div>
     </section>
 
     <div id="actions" class="result-actions" hidden>
-      <a class="button primary" href="https://www.google.com/maps/search/?api=1&amp;query=Parque%20Meio%20do%20Mundo%2C%20Macap%C3%A1%20AP" target="_blank" rel="noopener noreferrer">Abrir mapa <span aria-hidden="true">↗</span></a>
       <button class="button gift-action" id="gifts" type="button" aria-haspopup="dialog" aria-controls="gift-panel">
         <i class="gift-icon" aria-hidden="true"></i> Presentes
       </button>
-      <a class="button secondary" href="aniversario-do-josue.ics?v=3" download>Salvar na agenda</a>
-      <button class="replay" id="replay" type="button">Jogar de novo <span aria-hidden="true">↻</span></button>
+      <button class="button secondary" id="replay" type="button">Jogar de novo <span aria-hidden="true">↻</span></button>
     </div>
 
     <dialog class="gift-panel" id="gift-panel" aria-labelledby="gift-title">
@@ -123,7 +127,6 @@
           <li>Brinquedo educativo</li>
           <li>Dinossauros</li>
         </ul>
-        <a class="button primary" href="https://www.google.com/maps/search/?api=1&amp;query=Parque%20Meio%20do%20Mundo%2C%20Macap%C3%A1%20AP">Abrir mapa ↗</a>
       </article>
     </noscript>
   </main>

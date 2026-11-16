@@ -4,7 +4,7 @@ Convite jogável em uma fase curta de Green Hill Zone. Pode ser servido por qual
 
 Toque em **Jogar** para iniciar. O convite usa a tela disponível do celular e solicita o modo de tela cheia no primeiro toque. Segure os botões de direção para ganhar velocidade. Use **Pular** com o outro polegar ou segure **Dash** e solte para disparar. **Ver convite** abre os dados da festa direto na Praça do Meio do Mundo. O botão **Presentes** abre as sugestões. A música toca em loop a partir do primeiro toque em **Jogar** ou **Ver convite**.
 
-Se a data ou o local mudar, atualize os textos de `index.html`, as quatro revelações em `fase.js` e o evento em `aniversario-do-josue.ics`. A hora da festa é local de Macapá (UTC−3).
+Se a data ou o local mudar, atualize os textos de `index.html` e as revelações correspondentes em `fase.js`. A hora da festa é local de Macapá (UTC−3).
 
 ## Créditos
 
@@ -15,3 +15,5 @@ Se a data ou o local mudar, atualize os textos de `index.html`, as quatro revela
 
 - Praça do Meio do Mundo ilustrada em pixel art a partir das fotos de referência. O atlas `assets/praca-sprites.png` contém o Marco Zero, o letreiro, a Selvinha, a arara, a tartaruga e o conjunto de aves.
 - Tipografia [Bitcount Prop Single](https://github.com/google/fonts/tree/main/ofl/bitcountpropsingle), distribuída sob a licença SIL OFL 1.1.
+
+- A vinheta de chegada usa o anel alado da abertura do Sonic 1 e os quadros de animação do [Sonic 1 Disassembly](https://github.com/sonicretro/s1disasm), com a faixa redesenhada para o Josué.
