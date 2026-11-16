@@ -1,61 +1,17 @@
-# Valentina faz 2 🍓
+# Aniversário do Josué
 
-Convite interativo do aniversário de 2 anos da Valentina, tema Moranguinho.
-Sábado, 17 de outubro, às 19h30.
+Convite jogável em uma fase curta de Green Hill Zone. Pode ser servido por qualquer servidor estático. O GitHub Pages do repositório publica esta pasta em [josue/](https://fliparaujor.github.io/josue/).
 
-## O que tem no convite
+Toque em **Jogar** para iniciar. O convite usa a tela disponível do celular e solicita o modo de tela cheia no primeiro toque. Segure os botões de direção para ganhar velocidade. Use **Pular** com o outro polegar ou segure **Dash** e solte para disparar. **Ver convite** abre os dados da festa direto na Praça do Meio do Mundo. O botão **Presentes** abre as sugestões. A música toca em loop a partir do primeiro toque em **Jogar** ou **Ver convite**.
 
-- O vídeo animado (`convite.mp4`) logo no topo, com botão pra tocar com som
-- Bolo com duas velinhas pra assoprar com o dedo (toca "Parabéns pra você" quando as duas apagam)
-- Contagem regressiva até a festa
-- A Moranguinho no rodapé acenando, piscando e com o chapéu balançando (toque nela!)
-- Data, horário e botão pra salvar na agenda
+Se a data ou o local mudar, atualize os textos de `index.html`, as quatro revelações em `fase.js` e o evento em `aniversario-do-josue.ics`. A hora da festa é local de Macapá (UTC−3).
 
-## Onde trocar as informações
+## Créditos
 
-Tudo fica no bloco `FESTA`, no começo do `<script>` do `index.html`:
+- Sonic the Hedgehog e Green Hill Zone © SEGA.
+- Sprites do Sonic, argolas e placa de chegada recortados das folhas usadas no [projeto de reconstrução do Sonic 1 de Minekoloz](https://github.com/Minekoloz/Sonic-The-Hadgehog-1).
+- Cenário montado com os tiles e paletas do [Sonic Demo de ZeroByteOrg](https://github.com/ZeroByteOrg/sonicdemo), chão da reconstrução do Sonic 1 e o loop das [referências de física do Sonic](https://github.com/trentbrew/sonic-physics-guide).
+- Tema de Green Hill Zone na versão J2ME, do [projeto Sonic J2ME Web](https://github.com/josepilas/sonic-j2me-web). Efeitos de argola, pulo e chegada da [recriação em Phaser de rzencoder](https://github.com/rzencoder/sonic-hedgehog-game).
 
-```js
-const FESTA = {
-  nome: "Valentina",
-  inicio: "2026-10-17T19:30:00-03:00",
-  fim: "",                 // deixe "" pra não mostrar horário de término
-  comida: "...",           // deixe "" pra esconder
-  assinatura: "..."
-};
-```
-
-## Publicar no GitHub Pages
-
-1. Settings → Pages
-2. Em "Branch", escolha `main` e a pasta `/ (root)`, depois Save
-3. Em um ou dois minutos o convite fica em
-   `https://fliparaujor.github.io/aniversario-valentina-2-anos/`
-
-## Vídeo (Remotion)
-
-Convite em vídeo de 20 segundos, vertical 1080x1920, pra Story e status do WhatsApp.
-Fica na pasta `video/`.
-
-- Textos do vídeo: `video/src/festa.ts`
-- Camadas da Moranguinho: `video/public/moranguinho/`
-- Trilha e efeitos sonoros são sintetizados por `video/scripts/trilha.py`
-  (valsa com "Parabéns pra você", melodia em domínio público)
-
-```bash
-cd video
-npm install
-python3 scripts/trilha.py   # só se quiser regerar o áudio
-npm run studio              # abre o editor no navegador
-npm run render              # gera out/convite-valentina.mp4
-```
-
-Pra trocar o vídeo do convite depois de renderizar de novo:
-
-```bash
-ffmpeg -i video/out/convite-valentina.mp4 -vf scale=720:1280 -c:v libx264 -crf 25 -preset slow \
-  -movflags +faststart -c:a aac -b:a 128k convite.mp4
-```
-
-`previa.png` é a imagem que aparece quando o link do convite é colado no WhatsApp.
-Pra regerar: `cd video && npx remotion still Previa ../previa.png`.
+- Praça do Meio do Mundo ilustrada em pixel art a partir das fotos de referência. O atlas `assets/praca-sprites.png` contém o Marco Zero, o letreiro, a Selvinha, a arara, a tartaruga e o conjunto de aves.
+- Tipografia [Bitcount Prop Single](https://github.com/google/fonts/tree/main/ofl/bitcountpropsingle), distribuída sob a licença SIL OFL 1.1.

@@ -1,538 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Valentina faz 2</title>
-<meta name="description" content="Você está convidado pro aniversário de 2 anos da Valentina!">
-<meta property="og:title" content="Valentina faz 2 anos! 🍓">
-<meta property="og:description" content="Toque pra ver o convite animado da Valentina 🍓">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://fliparaujor.github.io/aniversario-valentina-2-anos/previa.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#E2384D">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gluten:wght@500;700;800&family=Figtree:wght@400;600;800&display=swap">
-<style>
-/* Layout: uma coluna estreita como um cartão. Vídeo no topo, depois detalhes, contagem, bolo interativo e a Moranguinho acenando.
-   Tema Moranguinho: xadrez vichy rosa, vermelho morango, folhinha verde. Tema único (claro) de propósito, é um convite de papel. */
-:root {
-  color-scheme: light;
-  --bg: #FFF1F4;
-  --paper: #FFFFFF;
-  --ink: #5A1F2E;
-  --ink-soft: #8A5763;
-  --berry: #E2384D;
-  --berry-deep: #B21E31;
-  --pink: #F7A3BA;
-  --pink-soft: #FDDDE6;
-  --leaf: #4E9F45;
-  --leaf-soft: #E2F2DC;
-  --seed: #FFD95A;
-  --line: #F6D3DC;
-  --display: "Gluten", "Comic Sans MS", "Chalkboard SE", cursive;
-  --body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --r: 22px;
-}
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--body);
-  font-size: 17px;
-  line-height: 1.55;
-  overflow-x: hidden;
-}
-/* xadrez vichy rosa, o tecido da toalha de piquenique da Moranguinho */
-body::before {
-  content: "";
-  position: fixed; inset: 0; z-index: -1;
-  background-color: var(--bg);
-  background-image:
-    linear-gradient(90deg, rgba(247,163,186,.32) 50%, transparent 50%),
-    linear-gradient(rgba(247,163,186,.32) 50%, transparent 50%);
-  background-size: 44px 44px;
-}
-.wrap {
-  max-width: 520px;
-  margin: 0 auto;
-  padding-inline: 16px;
-  padding-block: 28px 64px;
-  display: flex; flex-direction: column; gap: 28px;
-}
-h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.05; margin: 0; text-wrap: balance; }
-p { margin: 0; }
-a { color: var(--berry-deep); }
-:focus-visible { outline: 3px solid var(--berry); outline-offset: 3px; border-radius: 8px; }
-
-/* ---------- topo + vídeo ---------- */
-.hero { position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.title-name {
-  font-size: clamp(52px, 16vw, 88px);
-  color: var(--berry);
-  letter-spacing: -.01em;
-  text-shadow: 3px 4px 0 var(--pink);
-}
-.title-age { font-size: clamp(22px, 6.5vw, 30px); color: var(--ink); font-family: var(--display); font-weight: 700; }
-.title-age b { color: var(--berry-deep); }
-.tema { display: inline-flex; align-items: center; gap: 8px; background: var(--leaf); color: #fff;
-  font-weight: 800; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; border-radius: 999px;
-  box-shadow: 0 3px 0 #3E8436; }
-.tema svg { width: 20px; height: 22px; }
-
-.video-frame {
-  position: relative;
-  width: min(100%, 340px);
-  aspect-ratio: 9 / 16;
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 30px;
-  background-color: var(--berry);
-  background-image:
-    linear-gradient(90deg, rgba(255,255,255,.3) 50%, transparent 50%),
-    linear-gradient(rgba(255,255,255,.3) 50%, transparent 50%);
-  background-size: 20px 20px;
-  box-shadow: 0 6px 0 var(--berry-deep), 0 18px 40px rgba(90,31,46,.22);
-}
-.video-frame video {
-  display: block; width: 100%; height: 100%;
-  border-radius: 22px; object-fit: cover; background: var(--bg);
-}
-.play {
-  position: absolute; inset: 10px; border: 0; border-radius: 22px; cursor: pointer;
-  background: linear-gradient(to bottom, rgba(90,31,46,0) 40%, rgba(90,31,46,.45));
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 12px;
-  padding-bottom: 34px; color: #fff; font: 800 18px/1.2 var(--body);
-}
-.play-btn {
-  width: 84px; height: 84px; border-radius: 50%; background: var(--berry);
-  display: grid; place-items: center; box-shadow: 0 5px 0 var(--berry-deep), 0 0 0 8px rgba(255,255,255,.55);
-  animation: pulsa 1.4s ease-in-out infinite;
-}
-.play-btn svg { width: 34px; height: 34px; margin-left: 5px; }
-.play span { text-shadow: 0 2px 6px rgba(0,0,0,.35); }
-@keyframes pulsa { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.08) } }
-.hint { font-size: 14px; color: var(--ink-soft); font-weight: 600; }
-
-/* morangos boiando em volta do topo */
-.float { position: absolute; width: 34px; height: 38px; pointer-events: none; animation: boia 4s ease-in-out infinite alternate; }
-.float.f1 { left: 0; top: 4px; transform: rotate(-18deg); }
-.float.f2 { right: 2%; top: 0; width: 26px; height: 29px; animation-delay: -1.5s; }
-.float.f3 { right: -4px; top: 260px; width: 30px; height: 33px; animation-delay: -2.5s; }
-.float.f4 { left: -6px; top: 420px; width: 24px; height: 26px; animation-delay: -.8s; }
-@keyframes boia { from { translate: 0 0 } to { translate: 0 -10px } }
-
-/* ---------- cartões ---------- */
-.card {
-  background: var(--paper);
-  border-radius: var(--r);
-  padding: 24px 20px;
-  box-shadow: 0 2px 0 var(--line), 0 10px 30px rgba(90,31,46,.07);
-  outline: 2px dashed var(--pink); outline-offset: -9px;
-  display: flex; flex-direction: column; gap: 16px;
-}
-.card h2 { font-size: 30px; color: var(--ink); }
-.card h2 small { display: block; font-family: var(--body); font-size: 15px; font-weight: 600; color: var(--ink-soft); margin-top: 6px; letter-spacing: 0; }
-
-/* ---------- bolo ---------- */
-.cake-card { align-items: center; text-align: center; }
-.cake { width: 220px; max-width: 100%; height: auto; overflow: visible; }
-.candle-hit { cursor: pointer; }
-.flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker .5s ease-in-out infinite alternate; }
-.flame.out { animation: none; opacity: 0; transition: opacity .2s; }
-.smoke { opacity: 0; transform-box: fill-box; }
-.smoke.go { animation: smoke 1.4s ease-out forwards; }
-@keyframes flicker { from { transform: scale(1, 1) rotate(-3deg) } to { transform: scale(.9, 1.1) rotate(3deg) } }
-@keyframes smoke { 0% { opacity: .7; transform: translateY(0) } 100% { opacity: 0; transform: translateY(-26px) } }
-.cake-msg { font-weight: 600; color: var(--ink-soft); min-height: 1.6em; }
-.cake-msg.win { font-family: var(--display); font-size: 24px; color: var(--berry); }
-
-.btn-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-.btn {
-  appearance: none; border: 0; cursor: pointer; text-decoration: none;
-  font: 800 16px/1 var(--body);
-  padding: 14px 20px; border-radius: 999px;
-  background: var(--berry); color: #fff;
-  box-shadow: 0 4px 0 var(--berry-deep);
-  display: inline-flex; align-items: center; gap: 8px; justify-content: center;
-  transition: transform .08s, box-shadow .08s;
-}
-.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--berry-deep); }
-.btn.ghost { background: var(--paper); color: var(--ink); box-shadow: 0 0 0 2px var(--line) inset, 0 4px 0 var(--line); }
-.btn.ghost:active { box-shadow: 0 0 0 2px var(--line) inset, 0 1px 0 var(--line); }
-.btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
-
-/* ---------- contagem ---------- */
-.countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.cd-cell {
-  background: var(--bg); border-radius: 16px; padding: 12px 4px 10px; text-align: center;
-}
-.cd-num { font-family: var(--display); font-size: clamp(28px, 9vw, 38px); font-weight: 700; color: var(--berry-deep); font-variant-numeric: tabular-nums; line-height: 1; }
-.cd-lbl { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin-top: 6px; }
-.cd-done { text-align: center; font-family: var(--display); font-size: 26px; color: var(--berry); }
-
-/* ---------- detalhes ---------- */
-.facts { display: flex; flex-direction: column; gap: 14px; margin: 0; }
-.fact { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start; }
-.fact-ico { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; }
-.fact:nth-child(odd) .fact-ico { background: var(--pink-soft); }
-.fact:nth-child(even) .fact-ico { background: var(--leaf-soft); }
-.fact dt { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
-.fact dd { margin: 2px 0 0; font-weight: 600; min-width: 0; }
-.fact dd span { display: block; font-weight: 400; color: var(--ink-soft); font-size: 15px; }
-
-/* ---------- Moranguinho no rodapé (camadas animadas) ---------- */
-footer { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
-footer h2 { font-size: clamp(40px, 12vw, 56px); color: var(--berry); text-shadow: 3px 3px 0 var(--pink); }
-footer small { display: block; font-size: 14px; color: var(--ink-soft); margin-top: 4px; }
-.mg { position: relative; width: 310px; height: 465px; overflow: clip; border: 0; padding: 0; background: none; cursor: pointer; }
-.mg-cab, .mg-rig { display: block; }
-.mg-rig { position: absolute; left: 35px; top: 0; width: 887px; height: 1874px; transform-origin: 0 0; transform: scale(.248); }
-.mg-rig img { position: absolute; max-width: none; }
-.mg-be { left: 102.8px; top: 708px; width: 298.4px; height: 443.1px; transform-origin: 242.2px 60px; animation: bracoEsq 2.6s ease-in-out infinite alternate; }
-.mg-bd { left: 266.3px; top: 65.9px; width: 754px; height: 1508px; transform-origin: 381.7px 702.1px; animation: aceno .55s ease-in-out infinite alternate; }
-.mg-corpo { left: 0; top: 100px; width: 887px; height: 1774px; }
-.mg-cab { position: absolute; inset: 0; transform-origin: 500px 690px; animation: cabeca 3.4s ease-in-out infinite alternate; }
-.mg-rosto { left: 113px; top: 172px; width: 716.7px; height: 843.8px; }
-.mg-pisca { opacity: 0; animation: pisca 4.2s steps(1) infinite; }
-.mg-eba { opacity: 0; }
-.mg-chapeu { left: 159px; top: 17px; width: 665.25px; height: 1330.5px; transform-origin: 332.25px 360px; animation: chapeu 3.4s ease-in-out infinite alternate; animation-delay: -.25s; }
-.mg.eba .mg-eba { opacity: 1; }
-.mg.eba .mg-pisca { opacity: 0; animation: none; }
-.mg.eba .mg-rig { animation: pulo .5s ease-out; }
-@keyframes aceno { from { transform: rotate(-52deg) } to { transform: rotate(-86deg) } }
-@keyframes bracoEsq { from { transform: rotate(2deg) } to { transform: rotate(16deg) } }
-@keyframes cabeca { from { transform: rotate(-3deg) } to { transform: rotate(3deg) } }
-@keyframes chapeu { from { transform: rotate(3deg) } to { transform: rotate(9deg) } }
-@keyframes pisca { 0% { opacity: 0 } 93% { opacity: 1 } 97% { opacity: 0 } }
-@keyframes pulo { 0% { transform: scale(.248) } 30% { transform: translateY(-40px) scale(.236, .262) } 70% { transform: scale(.262, .232) } 100% { transform: scale(.248) } }
-
-#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aniversário do Josué · Sonic</title>
+  <meta name="description" content="Corra com o Sonic pela Green Hill Zone e descubra o convite do aniversário do Josué.">
+  <meta name="theme-color" content="#09142c">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sonic e o aniversário do Josué">
+  <meta property="og:description" content="Uma fase secreta de Green Hill Zone. Jogue com o Sonic e desbloqueie o convite!">
+  <meta property="og:url" content="https://fliparaujor.github.io/josue/">
+  <meta property="og:image" content="https://fliparaujor.github.io/josue/assets/previa.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Convite jogável de Green Hill Zone com o Sonic. Aniversário do Josué.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://fliparaujor.github.io/josue/">
+  <link rel="icon" href="assets/icone.png" type="image/png">
+  <link rel="preload" href="assets/bitcount.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="fase.css?v=3">
+  <script src="fase.js?v=3" defer></script>
 </head>
 <body>
-<canvas id="confetti" aria-hidden="true"></canvas>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="morango" viewBox="0 0 40 44">
-    <path d="M20 43 C9 38 2 27 3 18 C4 12 11 9 20 12 C29 9 36 12 37 18 C38 27 31 38 20 43Z" fill="#E2384D"/>
-    <path d="M9 17 C12 14 16 14 18 15" stroke="#FF8A98" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <g fill="#FFD95A">
-      <ellipse cx="12" cy="22" rx="1.2" ry="1.9"/><ellipse cx="20" cy="20" rx="1.2" ry="1.9"/><ellipse cx="28" cy="22" rx="1.2" ry="1.9"/>
-      <ellipse cx="15" cy="29" rx="1.2" ry="1.9"/><ellipse cx="25" cy="29" rx="1.2" ry="1.9"/><ellipse cx="20" cy="36" rx="1.2" ry="1.9"/>
-    </g>
-    <path d="M20 15 L9 10 L15 9.5 L11 4 L20 8.5 L29 4 L25 9.5 L31 10 Z" fill="#4E9F45"/>
-    <path d="M20 9 q1 -5 5 -7.5" stroke="#3E8436" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  </symbol>
-</svg>
+  <main class="arcade" id="arcade" data-state="intro">
+    <canvas id="stage" width="224" height="394" tabindex="-1" aria-label="Fase do Sonic. Use os controles na tela para correr e pular."></canvas>
 
-<main class="wrap">
+    <div class="game-bar">
+      <div class="wordmark" aria-label="Sonic">SONIC</div>
+      <div class="hud" id="hud" hidden>
+        <i class="hud-ring" aria-hidden="true"></i>
+        <div class="hud-info">
+          <span class="hud-label">Argolas</span>
+          <div class="hud-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <output id="ring-count" aria-label="Argolas coletadas">0/4</output>
+      </div>
+      <div class="game-tools">
+        <button class="icon-button" id="sound" type="button" aria-pressed="true" aria-label="Desligar som" title="Som">
+          <span aria-hidden="true">♫</span>
+        </button>
+        <button class="icon-button fullscreen" id="full" type="button" aria-pressed="false" aria-label="Tela cheia" title="Tela cheia">
+          <span class="fullscreen-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
 
-  <header class="hero">
-    <svg class="float f1" aria-hidden="true"><use href="#morango"/></svg>
-    <svg class="float f2" aria-hidden="true"><use href="#morango"/></svg>
-    <svg class="float f3" aria-hidden="true"><use href="#morango"/></svg>
-    <svg class="float f4" aria-hidden="true"><use href="#morango"/></svg>
-    <p class="tema"><svg aria-hidden="true"><use href="#morango"/></svg>Festa da Moranguinho</p>
-    <h1 class="title-name" data-fill="nome">Valentina</h1>
-    <p class="title-age">vai fazer <b>2 aninhos</b>!</p>
-    <div class="video-frame">
-      <video id="video" src="convite.mp4" poster="poster.jpg" playsinline preload="metadata"></video>
-      <button class="play" id="play" type="button" aria-label="Assistir o convite com som">
-        <span class="play-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z" fill="#fff"/></svg></span>
-        <span id="playTxt">Toque pra assistir 🔊</span>
+    <section class="intro" id="intro" aria-labelledby="opening-title">
+      <div class="intro-copy">
+        <p class="zone"><i aria-hidden="true"></i>Green Hill Zone</p>
+        <h1 id="opening-title"><span>Aniversário do</span><strong>Josué</strong></h1>
+        <p class="mission">Corra com o Sonic e pegue as argolas para descobrir os detalhes da festa.</p>
+      </div>
+      <button class="button primary start" id="start" type="button"><span>Jogar</span><i class="play-arrow" aria-hidden="true"></i></button>
+    </section>
+
+    <button class="skip" id="skip" type="button">Ver convite <span aria-hidden="true">↗</span></button>
+
+    <div class="clue" id="clue" aria-live="polite" aria-atomic="true">
+      <span id="clue-label" class="clue-label"></span>
+      <strong id="clue-text"></strong>
+    </div>
+
+    <div class="controller" id="controls" aria-label="Controles de toque" hidden>
+      <div class="direction">
+        <button type="button" class="control arrow left" data-input="left" aria-label="Correr para a esquerda"><i aria-hidden="true"></i></button>
+        <button type="button" class="control arrow right" data-input="right" aria-label="Correr para a direita"><i aria-hidden="true"></i></button>
+      </div>
+      <div class="move-actions">
+        <span id="dash-help" class="dash-help">Segure o Dash e solte</span>
+        <button type="button" class="control dash" id="dash" data-input="dash" aria-label="Spin Dash" aria-describedby="dash-help"><i aria-hidden="true"></i><span>Dash</span></button>
+        <button type="button" class="control jump" data-input="jump" aria-label="Pular"><i aria-hidden="true"></i><span>Pular</span></button>
+      </div>
+    </div>
+
+    <section class="result" id="result" aria-labelledby="event-title" hidden>
+      <p class="result-kicker" id="result-kicker">Fase concluída!</p>
+      <h2 id="event-title" tabindex="-1"><span>Aniversário do</span><strong>Josué</strong></h2>
+      <dl class="event-details">
+        <div><dt>Dia</dt><dd><time datetime="2026-11-22">Domingo, 22/11</time></dd></div>
+        <div><dt>Hora</dt><dd><time datetime="2026-11-22T17:00:00-03:00">17h</time></dd></div>
+        <div class="location"><dt>Local</dt><dd>Praça do Meio do Mundo <span>Macapá, AP</span></dd></div>
+      </dl>
+    </section>
+
+    <div id="actions" class="result-actions" hidden>
+      <a class="button primary" href="https://www.google.com/maps/search/?api=1&amp;query=Parque%20Meio%20do%20Mundo%2C%20Macap%C3%A1%20AP" target="_blank" rel="noopener noreferrer">Abrir mapa <span aria-hidden="true">↗</span></a>
+      <button class="button gift-action" id="gifts" type="button" aria-haspopup="dialog" aria-controls="gift-panel">
+        <i class="gift-icon" aria-hidden="true"></i> Presentes
       </button>
+      <a class="button secondary" href="aniversario-do-josue.ics?v=3" download>Salvar na agenda</a>
+      <button class="replay" id="replay" type="button">Jogar de novo <span aria-hidden="true">↻</span></button>
     </div>
-    <p class="hint">Depois role pra baixo e assopre as velinhas 👇</p>
-  </header>
 
-  <section class="card" aria-labelledby="cdTitle">
-    <h2 id="cdTitle">Falta pouquinho</h2>
-    <div class="countdown" id="countdown">
-      <div class="cd-cell"><div class="cd-num" id="cdD">0</div><div class="cd-lbl">dias</div></div>
-      <div class="cd-cell"><div class="cd-num" id="cdH">0</div><div class="cd-lbl">horas</div></div>
-      <div class="cd-cell"><div class="cd-num" id="cdM">0</div><div class="cd-lbl">min</div></div>
-      <div class="cd-cell"><div class="cd-num" id="cdS">0</div><div class="cd-lbl">seg</div></div>
-    </div>
-    <p class="cd-done" id="cdDone" hidden>É hoje! 🎉</p>
-  </section>
+    <dialog class="gift-panel" id="gift-panel" aria-labelledby="gift-title">
+      <header class="gift-heading">
+        <i class="gift-icon" aria-hidden="true"></i>
+        <h2 id="gift-title">Sugestões de presente</h2>
+      </header>
+      <ul class="gift-list">
+        <li><span>Roupas</span><strong>10 anos</strong></li>
+        <li><span>Sapato</span><strong>33</strong></li>
+        <li><strong>Brinquedo educativo</strong></li>
+        <li><strong>Dinossauros</strong></li>
+      </ul>
+      <form method="dialog">
+        <button class="button primary" type="submit" autofocus>Voltar ao convite</button>
+      </form>
+    </dialog>
 
-  <section class="card" aria-labelledby="infoTitle">
-    <h2 id="infoTitle">Anota aí</h2>
-    <dl class="facts">
-      <div class="fact">
-        <div class="fact-ico" aria-hidden="true">📅</div>
-        <div><dt>Quando</dt><dd id="fQuando">Sábado</dd></div>
-      </div>
-      <div class="fact">
-        <div class="fact-ico" aria-hidden="true">⏰</div>
-        <div><dt>Horário</dt><dd id="fHora">16h</dd></div>
-      </div>
-      <div class="fact" id="factExtra">
-        <div class="fact-ico" aria-hidden="true">🍽️</div>
-        <div><dt>Comidinhas</dt><dd id="fExtra"></dd></div>
-      </div>
-    </dl>
-    <div class="btn-row">
-      <a class="btn ghost" id="calLink" href="#" target="_blank" rel="noopener">🗓️ Salvar na agenda</a>
-    </div>
-  </section>
-
-  <section class="card cake-card" aria-labelledby="cakeTitle">
-    <h2 id="cakeTitle">Faça um pedido<small>e assopre as velinhas (toque nelas)</small></h2>
-    <svg class="cake" viewBox="0 0 220 200" role="img" aria-label="Bolo com duas velinhas">
-      <!-- prato -->
-      <ellipse cx="110" cy="186" rx="100" ry="10" fill="#F6D3DC"/>
-      <!-- andar de baixo: rosa com cobertura branca -->
-      <rect x="22" y="120" width="176" height="64" rx="14" fill="#F7A3BA"/>
-      <path d="M22 134 q14 14 29 0 t29 0 t29 0 t29 0 t29 0 t29 0 v-6 a14 14 0 0 0 -14 -8 h-148 a14 14 0 0 0 -14 8z" fill="#FFFFFF"/>
-      <use href="#morango" x="40" y="150" width="20" height="22"/>
-      <use href="#morango" x="84" y="156" width="20" height="22"/>
-      <use href="#morango" x="128" y="150" width="20" height="22"/>
-      <use href="#morango" x="166" y="156" width="20" height="22"/>
-      <!-- andar de cima: creme com calda de morango -->
-      <rect x="50" y="78" width="120" height="48" rx="12" fill="#FDDDE6"/>
-      <path d="M50 90 q10 12 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 v-4 a12 12 0 0 0 -12 -8 h-96 a12 12 0 0 0 -12 8z" fill="#E2384D"/>
-      <use href="#morango" x="52" y="58" width="24" height="26"/>
-      <use href="#morango" x="144" y="58" width="24" height="26"/>
-      <!-- velas -->
-      <g class="candle-hit" data-candle="0" tabindex="0" role="button" aria-label="Assoprar vela 1">
-        <rect x="76" y="30" width="44" height="60" fill="transparent"/>
-        <rect x="88" y="44" width="12" height="36" rx="4" fill="#E2384D"/>
-        <path d="M88 52 l12 -6 M88 62 l12 -6 M88 72 l12 -6" stroke="#FFFFFF" stroke-width="3"/>
-        <path d="M94 44 v-5" stroke="#5A1F2E" stroke-width="2"/>
-        <path class="flame" d="M94 18 c7 9 8 14 4 18 a6 6 0 0 1 -8 0 c-4 -4 -3 -9 4 -18z" fill="#FFB21E"/>
-        <circle class="smoke" cx="94" cy="34" r="4" fill="#C9BFCC"/>
-      </g>
-      <g class="candle-hit" data-candle="1" tabindex="0" role="button" aria-label="Assoprar vela 2">
-        <rect x="104" y="30" width="44" height="60" fill="transparent"/>
-        <rect x="120" y="44" width="12" height="36" rx="4" fill="#E2384D"/>
-        <path d="M120 52 l12 -6 M120 62 l12 -6 M120 72 l12 -6" stroke="#FFFFFF" stroke-width="3"/>
-        <path d="M126 44 v-5" stroke="#5A1F2E" stroke-width="2"/>
-        <path class="flame" d="M126 18 c7 9 8 14 4 18 a6 6 0 0 1 -8 0 c-4 -4 -3 -9 4 -18z" fill="#FFB21E"/>
-        <circle class="smoke" cx="126" cy="34" r="4" fill="#C9BFCC"/>
-      </g>
-    </svg>
-    <p class="cake-msg" id="cakeMsg" aria-live="polite">Duas velinhas, uma pra cada aninho.</p>
-    <div class="btn-row">
-      <button class="btn ghost" id="relight" type="button" hidden>Acender de novo</button>
-    </div>
-  </section>
-
-  <footer>
-    <button class="mg" id="mg" type="button" aria-label="Moranguinho acenando. Toque nela!">
-      <span class="mg-rig" aria-hidden="true">
-        <img class="mg-be" src="img/braco-esquerdo.webp" alt="">
-        <img class="mg-bd" src="img/braco-direito.webp" alt="">
-        <img class="mg-corpo" src="img/corpo-sem-bracos.webp" alt="">
-        <span class="mg-cab">
-          <img class="mg-rosto" src="img/moranguinho-cabeca.webp" alt="">
-          <img class="mg-rosto mg-pisca" src="img/cabeca-piscando.webp" alt="">
-          <img class="mg-rosto mg-eba" src="img/cabeca-boca-aberta.webp" alt="">
-          <img class="mg-chapeu" src="img/moranguinho-chapeu.webp" alt="">
-        </span>
-      </span>
-    </button>
-    <h2>Te esperamos!</h2>
-    <small id="assinatura">Com carinho, família da Valentina</small>
-  </footer>
-</main>
-
-
-<script>
-/* =========================================================
-   EDITE AQUI: todas as informações da festa ficam neste bloco
-   ========================================================= */
-const FESTA = {
-  nome: "Valentina",
-  // data e hora de início, no fuso de Brasília (-03:00)
-  inicio: "2026-10-17T19:30:00-03:00",
-  // horário de término: deixe "" se não quiser mostrar (a agenda usa 3h de duração)
-  fim: "",
-  // aparece em "Anota aí". Deixe "" pra esconder
-  comida: "Vem com fome: vai ter jantar, salgadinhos, docinhos e lanches.",
-  assinatura: "Com carinho, família da Valentina"
-};
-/* ========================================================= */
-
-const $ = (s) => document.querySelector(s);
-const inicio = new Date(FESTA.inicio);
-const fim = FESTA.fim ? new Date(FESTA.fim) : new Date(inicio.getTime() + 3 * 36e5);
-
-// ---------- preenche textos ----------
-document.querySelectorAll('[data-fill="nome"]').forEach(el => el.textContent = FESTA.nome);
-document.title = FESTA.nome + " faz 2";
-const fmtDia = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long", timeZone: "America/Sao_Paulo" });
-const fmtHora = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
-const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const horaBR = (d) => fmtHora.format(d).replace(":00", "h").replace(":", "h");
-$("#fQuando").textContent = cap(fmtDia.format(inicio));
-$("#fHora").textContent = FESTA.fim ? "das " + horaBR(inicio) + " às " + horaBR(fim) : "às " + horaBR(inicio);
-if (FESTA.comida) $("#fExtra").textContent = FESTA.comida; else $("#factExtra").hidden = true;
-$("#assinatura").textContent = FESTA.assinatura;
-
-// ---------- link da agenda ----------
-const gcal = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-$("#calLink").href = "https://calendar.google.com/calendar/render?action=TEMPLATE"
-  + "&text=" + encodeURIComponent("Aniversário de 2 anos da " + FESTA.nome)
-  + "&dates=" + gcal(inicio) + "/" + gcal(fim)
-  + "&details=" + encodeURIComponent(FESTA.comida || "");
-
-// ---------- confete ----------
-const cv = $("#confetti"), cx = cv.getContext("2d");
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let bits = [], raf = 0;
-const cores = ["#E2384D", "#F7A3BA", "#4E9F45", "#FFD95A", "#B21E31", "#FFFFFF"];
-function sizeCanvas() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
-addEventListener("resize", sizeCanvas); sizeCanvas();
-function confete(x = innerWidth / 2, y = innerHeight / 3, n = 140) {
-  if (reduce) return;
-  for (let i = 0; i < n; i++) {
-    const a = Math.random() * Math.PI * 2, v = 4 + Math.random() * 9;
-    bits.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 6, s: 5 + Math.random() * 6,
-      r: Math.random() * 6, vr: (Math.random() - .5) * .4, c: cores[i % cores.length], t: 0, round: Math.random() < .25, morango: i % 5 === 0 });
-  }
-  if (!raf) raf = requestAnimationFrame(tick);
-}
-function tick() {
-  const k = devicePixelRatio;
-  cx.clearRect(0, 0, cv.width, cv.height);
-  bits = bits.filter(b => b.y < innerHeight + 40 && b.t < 400);
-  for (const b of bits) {
-    b.t++; b.vy += .28; b.vx *= .985; b.x += b.vx; b.y += b.vy; b.r += b.vr;
-    cx.save(); cx.translate(b.x * k, b.y * k); cx.rotate(b.r); cx.fillStyle = b.c;
-    if (b.morango) {
-      const w = b.s * k * 1.3, h = b.s * k * 1.5;
-      cx.fillStyle = "#E2384D"; cx.beginPath(); cx.moveTo(0, h * .6);
-      cx.bezierCurveTo(-w, h * .1, -w * .8, -h * .6, 0, -h * .35);
-      cx.bezierCurveTo(w * .8, -h * .6, w, h * .1, 0, h * .6); cx.fill();
-      cx.fillStyle = "#4E9F45"; cx.fillRect(-w * .45, -h * .55, w * .9, h * .22);
-    } else if (b.round) { cx.beginPath(); cx.arc(0, 0, b.s * k / 2, 0, 7); cx.fill(); }
-    else cx.fillRect(-b.s * k / 2, -b.s * k / 4, b.s * k, b.s * k / 2);
-    cx.restore();
-  }
-  raf = bits.length ? requestAnimationFrame(tick) : 0;
-  if (!raf) cx.clearRect(0, 0, cv.width, cv.height);
-}
-
-// ---------- vídeo ----------
-const video = $("#video"), play = $("#play");
-play.addEventListener("click", () => {
-  pararParabens();
-  video.muted = false;
-  video.controls = true;
-  video.play().then(() => { play.hidden = true; }).catch(() => { video.controls = true; play.hidden = true; });
-});
-video.addEventListener("ended", () => {
-  video.controls = false;
-  $("#playTxt").textContent = "Ver de novo 🔁";
-  play.hidden = false;
-  const r = video.getBoundingClientRect();
-  confete(r.left + r.width / 2, r.top + r.height / 3, 160);
-});
-
-// ---------- Moranguinho: toque nela ----------
-const mg = $("#mg");
-mg.addEventListener("click", () => {
-  mg.classList.remove("eba"); void mg.offsetWidth; mg.classList.add("eba");
-  const r = mg.getBoundingClientRect();
-  confete(r.left + r.width / 2, r.top + r.height / 4, 90);
-  clearTimeout(mg._t); mg._t = setTimeout(() => mg.classList.remove("eba"), 1300);
-});
-
-// ---------- velinhas ----------
-const candles = [...document.querySelectorAll(".candle-hit")];
-let apagadas = 0;
-function assoprar(g) {
-  const flame = g.querySelector(".flame");
-  if (flame.classList.contains("out")) return;
-  flame.classList.add("out");
-  const smoke = g.querySelector(".smoke");
-  smoke.classList.remove("go"); void smoke.getBBox(); smoke.classList.add("go");
-  apagadas++;
-  const msg = $("#cakeMsg");
-  if (apagadas < candles.length) {
-    msg.textContent = "Falta mais uma!";
-  } else {
-    msg.textContent = "Parabéns, " + FESTA.nome + "! 🎉";
-    msg.classList.add("win");
-    $("#relight").hidden = false;
-    const r = g.getBoundingClientRect();
-    confete(r.left + r.width / 2, r.top, 180);
-    tocar();
-  }
-}
-candles.forEach(g => {
-  g.addEventListener("click", () => assoprar(g));
-  g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); assoprar(g); } });
-});
-$("#relight").addEventListener("click", () => {
-  document.querySelectorAll(".flame").forEach(f => f.classList.remove("out"));
-  document.querySelectorAll(".smoke").forEach(s => s.classList.remove("go"));
-  apagadas = 0;
-  $("#cakeMsg").textContent = "Acendeu! Faça outro pedido.";
-  $("#cakeMsg").classList.remove("win");
-  $("#relight").hidden = true;
-});
-
-// ---------- contagem regressiva ----------
-function contar() {
-  let ms = inicio - Date.now();
-  if (ms <= 0) { $("#countdown").hidden = true; $("#cdDone").hidden = false;
-    if (Date.now() > fim) $("#cdDone").textContent = "Foi demais! Obrigado por ter vindo 💗"; return; }
-  const d = Math.floor(ms / 864e5); ms -= d * 864e5;
-  const h = Math.floor(ms / 36e5); ms -= h * 36e5;
-  const m = Math.floor(ms / 6e4); ms -= m * 6e4;
-  const s = Math.floor(ms / 1e3);
-  $("#cdD").textContent = d; $("#cdH").textContent = h;
-  $("#cdM").textContent = String(m).padStart(2, "0"); $("#cdS").textContent = String(s).padStart(2, "0");
-}
-contar(); setInterval(contar, 1000);
-
-// ---------- Parabéns pra você (sintetizado) ----------
-let ac = null, tocando = false, fimParabens = 0;
-const N = { G4: 392, A4: 440, B4: 493.9, C5: 523.3, D5: 587.3, E5: 659.3, F5: 698.5, G5: 784 };
-// melodia em 3/4, duração em colcheias
-const MELODIA = [
-  ["G4",1.5],["G4",.5],["A4",2],["G4",2],["C5",2],["B4",4],
-  ["G4",1.5],["G4",.5],["A4",2],["G4",2],["D5",2],["C5",4],
-  ["G4",1.5],["G4",.5],["G5",2],["E5",2],["C5",2],["B4",2],["A4",4],
-  ["F5",1.5],["F5",.5],["E5",2],["C5",2],["D5",2],["C5",6]
-];
-function tocar() {
-  if (tocando) return;
-  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
-  ac.resume();
-  if (!video.paused) video.pause();
-  tocando = true;
-  const beat = 0.22;
-  let t = ac.currentTime + 0.05;
-  for (const [n, d] of MELODIA) {
-    const dur = d * beat;
-    const o = ac.createOscillator(), g = ac.createGain();
-    o.type = "triangle"; o.frequency.value = N[n];
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(.22, t + .02);
-    g.gain.exponentialRampToValueAtTime(.001, t + dur * .95);
-    o.connect(g).connect(ac.destination);
-    o.start(t); o.stop(t + dur);
-    t += dur;
-  }
-  fimParabens = setTimeout(() => { tocando = false; }, (t - ac.currentTime) * 1000);
-}
-function pararParabens() {
-  if (!tocando || !ac) return;
-  ac.suspend(); ac = null; tocando = false; clearTimeout(fimParabens);
-}
-</script>
+    <noscript>
+      <style>.arcade > :not(noscript) { display: none; }</style>
+      <article class="no-js">
+        <h1>Aniversário do Josué</h1>
+        <p>Domingo, 22 de novembro, às 17h.</p>
+        <p>Praça do Meio do Mundo, Macapá, AP.</p>
+        <p>Sugestões de presente</p>
+        <ul>
+          <li>Roupas 10 anos</li>
+          <li>Sapato 33</li>
+          <li>Brinquedo educativo</li>
+          <li>Dinossauros</li>
+        </ul>
+        <a class="button primary" href="https://www.google.com/maps/search/?api=1&amp;query=Parque%20Meio%20do%20Mundo%2C%20Macap%C3%A1%20AP">Abrir mapa ↗</a>
+      </article>
+    </noscript>
+  </main>
 </body>
 </html>
