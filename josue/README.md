@@ -2,7 +2,7 @@
 
 Convite jogável em uma fase curta de Green Hill Zone. Pode ser servido por qualquer servidor estático. O GitHub Pages do repositório publica esta pasta em [josue/](https://fliparaujor.github.io/aniversario-valentina-2-anos/josue/).
 
-Toque em **Jogar** para iniciar. O convite usa a tela disponível do celular e solicita o modo de tela cheia no primeiro toque. Segure os botões de direção para correr e toque em **Pular** com o outro polegar. **Ver convite** abre os dados da festa direto na Praça do Meio do Mundo.
+Toque em **Jogar** para iniciar. O convite usa a tela disponível do celular e solicita o modo de tela cheia no primeiro toque. Segure os botões de direção para ganhar velocidade. Use **Pular** com o outro polegar ou segure **Dash** e solte para disparar. **Ver convite** abre os dados da festa direto na Praça do Meio do Mundo. O botão **Presentes** abre as sugestões. A música toca em loop a partir do primeiro toque em **Jogar** ou **Ver convite**.
 
 Se a data ou o local mudar, atualize os textos de `index.html`, as quatro revelações em `fase.js` e o evento em `aniversario-do-josue.ics`. A hora da festa é local de Macapá (UTC−3).
 

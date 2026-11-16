@@ -26,7 +26,7 @@ const ART = {
 const CLUES = [
   { x: 423, label: "Aniversariante", value: "Josué" },
   { x: 940, label: "Dia da festa", value: "Domingo, 22 de novembro" },
-  { x: 1510, label: "Hora da festa", value: "17h30" },
+  { x: 1510, label: "Hora da festa", value: "17h" },
   { x: 2150, label: "Local da festa", value: "Praça do Meio do Mundo · Macapá" },
 ];
 
@@ -37,6 +37,17 @@ const PAVING_START = 2652;
 const FINISH = 2744;
 const GOAL_POST = FINISH - 53;
 const WORLD_END = 3500;
+const RUN_TOP = 224;
+const RUN_ACCEL = 88;
+const AIR_ACCEL = 102;
+const RUN_BRAKE = 385;
+const GROUND_FRICTION = 164;
+const AIR_FRICTION = 67;
+const DASH_MIN = 280;
+const DASH_MAX = 390;
+const DASH_CHARGE_TIME = .78;
+const DASH_BRAKE = 615;
+const DASH_FRICTION = 159;
 const TERRAIN = [
   [0, 192], [230, 192], [340, 179], [514, 179], [642, 195],
   [802, 195], [916, 177], [1100, 177], [1305, 196], [1452, 196],
@@ -105,6 +116,7 @@ const canvas = stage.getContext("2d", { alpha: false });
 const hud = byId("hud");
 const controls = byId("controls");
 const controlButtons = [...controls.querySelectorAll("[data-input]")];
+const dashButton = byId("dash");
 const progressMarks = [...hud.querySelectorAll(".hud-progress i")];
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -123,15 +135,17 @@ function soundFile(path, volume, loop = false) {
   return audio;
 }
 const music = soundFile("assets/green-hill.ogg", .36, true);
+music.preload = "auto";
 const sounds = {
   ring: soundFile("assets/argola.wav", .46),
   jump: soundFile("assets/salto.wav", .24),
-  clear: soundFile("assets/chegada.wav", .43),
+  dash: soundFile("assets/spin-dash.wav", .32),
+  clear: soundFile("assets/chegada.wav", .31),
 };
 
 const keys = new Set();
 const pointers = new Map();
-let soundOn = false;
+let soundOn = true;
 let state = "intro";
 let player;
 let camera = 0;
@@ -142,6 +156,7 @@ let finishFrom = 0;
 let burstIndex = 0;
 let bursts = [];
 let jumpQueued = false;
+let dashStartedAt = null;
 let collectibles = [];
 let count = 0;
 
@@ -167,7 +182,7 @@ function floorAt(x) {
 }
 
 function resetPlayer() {
-  player = { x: 52, y: floorAt(52), vx: 0, vy: 0, facing: 1, base: "floor", animation: 0 };
+  player = { x: 52, y: floorAt(52), vx: 0, vy: 0, facing: 1, base: "floor", animation: 0, spinning: false };
   collectibles = CLUES.map((clue) => ({ ...clue, collectedAt: null }));
   camera = 0;
   clock = 0;
@@ -202,7 +217,12 @@ function playAudio(audio, restart = false) {
   audio.play().catch(() => {});
 }
 
+function keepMusicPlaying() {
+  if (music.paused) playAudio(music);
+}
+
 function start() {
+  keepMusicPlaying();
   enterFullscreen();
   resetPlayer();
   byId("clue").classList.remove("show");
@@ -210,13 +230,13 @@ function start() {
   byId("clue-text").textContent = "";
   setState("playing");
   stage.focus({ preventScroll: true });
-  playAudio(music, true);
 }
 
 function clearInput() {
   keys.clear();
   pointers.clear();
   jumpQueued = false;
+  cancelDash();
   controlButtons.forEach((button) => button.classList.remove("active"));
 }
 
@@ -235,9 +255,9 @@ function arrive() {
   finishFrom = player.x;
   finishTime = 0;
   clearInput();
+  player.spinning = false;
   byId("clue").classList.remove("show");
   setState("celebrating");
-  music.pause();
   playAudio(sounds.clear, true);
 }
 
@@ -249,11 +269,12 @@ function showResult(completed) {
     player.x = FINISH + 71;
     player.y = floorAt(player.x);
     player.vx = 0;
+    player.facing = 1;
     player.base = "floor";
+    player.spinning = false;
     camera = cameraTarget(.69);
     finishTime = 3;
     burstIndex = FIREWORKS.length;
-    music.pause();
   }
   setState("finished");
   byId("event-title").focus({ preventScroll: true });
@@ -263,13 +284,69 @@ function isHeld(input) {
   return keys.has(input) || pointers.has(input);
 }
 
+function inputDirection() {
+  return Number(isHeld("right")) - Number(isHeld("left"));
+}
+
+function dashCharge() {
+  return dashStartedAt === null ? 0 : clamp((clock - dashStartedAt) / DASH_CHARGE_TIME, 0, 1);
+}
+
+function beginDash() {
+  if (!player.base || dashStartedAt !== null) return;
+  dashStartedAt = clock;
+  player.spinning = false;
+}
+
+function cancelDash() {
+  if (dashStartedAt === null) return;
+  dashStartedAt = null;
+  dashButton.style.removeProperty("--dash-fill");
+  dashButton.classList.remove("charged");
+}
+
+function launchDash() {
+  if (dashStartedAt === null) return;
+  const charge = dashCharge();
+  cancelDash();
+  if (!player.base) return;
+  player.facing = inputDirection() || player.facing;
+  player.vx = player.facing * (DASH_MIN + (DASH_MAX - DASH_MIN) * charge);
+  player.spinning = true;
+  playAudio(sounds.dash, true);
+}
+
+function accelerate(direction, dt) {
+  if (dashStartedAt !== null) {
+    const charge = dashCharge();
+    player.vx = approach(player.vx, 0, DASH_BRAKE * dt);
+    dashButton.style.setProperty("--dash-fill", Math.round(charge * 100) + "%");
+    dashButton.classList.toggle("charged", charge === 1);
+    return;
+  }
+
+  if (player.spinning) {
+    const braking = player.vx * direction < 0;
+    const friction = braking ? RUN_BRAKE : DASH_FRICTION;
+    player.vx = approach(player.vx, 0, friction * dt);
+    player.spinning = Math.abs(player.vx) > RUN_TOP;
+    return;
+  }
+
+  let rate = player.base ? GROUND_FRICTION : AIR_FRICTION;
+  if (direction) rate = player.base ? RUN_ACCEL : AIR_ACCEL;
+  if (player.vx * direction < 0) rate = RUN_BRAKE;
+  player.vx = approach(player.vx, direction * RUN_TOP, rate * dt);
+}
+
 function movePlayer(dt) {
-  const direction = Number(isHeld("right")) - Number(isHeld("left"));
-  const pace = direction ? (player.base ? 377 : 274) : 492;
-  player.vx = approach(player.vx, direction * 164, pace * dt);
-  if (direction) player.facing = direction;
+  const direction = inputDirection();
+  if (direction && !player.spinning) player.facing = direction;
+  if (isHeld("dash")) beginDash();
+  accelerate(direction, dt);
 
   if (jumpQueued && player.base) {
+    cancelDash();
     player.base = null;
     player.vy = -251;
     playAudio(sounds.jump, true);
@@ -303,7 +380,9 @@ function movePlayer(dt) {
     }
   }
 
-  player.animation += dt * (player.base ? 3.6 + Math.abs(player.vx) * .074 : 22);
+  if (!player.base) cancelDash();
+  const rolling = dashStartedAt !== null || player.spinning || !player.base;
+  player.animation += dt * (rolling ? 25 + dashCharge() * 17 : 3.6 + Math.abs(player.vx) * .087);
   for (const clue of collectibles) {
     if (clue.collectedAt === null && player.x >= clue.x - 18) showClue(clue);
   }
@@ -575,9 +654,9 @@ function drawPlayer(x, y, zoom = 1, intro = false) {
   const running = Math.abs(player.vx);
   let sequence = POSES.idle;
   if (!intro) {
-    if (!player.base) sequence = POSES.roll;
-    else if (running > 153) sequence = POSES.dash;
-    else if (running > 105) sequence = POSES.run;
+    if (!player.base || dashStartedAt !== null || player.spinning) sequence = POSES.roll;
+    else if (running > 168) sequence = POSES.dash;
+    else if (running > 77) sequence = POSES.run;
     else if (running > 9) sequence = POSES.walk;
   }
   const animation = intro ? (reducedMotion ? 0 : clock * 3) : player.animation;
@@ -589,6 +668,19 @@ function drawPlayer(x, y, zoom = 1, intro = false) {
     canvas.fillRect(Math.round(x - 10), Math.round(y - 30), 20, 27);
     canvas.fillStyle = "#ed3034";
     canvas.fillRect(Math.round(x - 11), Math.round(y - 4), 23, 4);
+  }
+}
+
+function drawDashTrail(x, y) {
+  if (!player.spinning || reducedMotion) return;
+  const trail = Math.floor(clock * 120) % 8;
+  const colors = ["#eaf8ff", "#84dcff", "#bbf2ff", "#439eff"];
+  for (let n = 0; n < 7; n++) {
+    const width = 5 + n % 3 * 4;
+    const left = x - player.facing * (19 + n * 5 + trail) - (player.facing === 1 ? width : 0);
+    const top = y - 6 - n % 4 * 6;
+    canvas.fillStyle = colors[n % colors.length];
+    canvas.fillRect(Math.round(left), Math.round(top), width, 1 + n % 2);
   }
 }
 
@@ -644,6 +736,7 @@ function draw() {
   canvas.translate(0, offset);
   drawClues(cam);
   drawSign(cam);
+  drawDashTrail(player.x - cam, player.y);
   drawPlayer(player.x - cam, player.y);
   canvas.restore();
   drawBursts();
@@ -682,6 +775,7 @@ fullscreenButton.hidden = !(arcade.requestFullscreen || arcade.webkitRequestFull
   || (document.fullscreenEnabled === false && !document.webkitFullscreenEnabled);
 fullscreenButton.addEventListener("click", () => {
   if (!fullscreenElement()) {
+    keepMusicPlaying();
     enterFullscreen();
   } else if (document.exitFullscreen) {
     document.exitFullscreen()?.catch(() => {});
@@ -704,6 +798,7 @@ const keyboard = {
   ArrowLeft: "left", KeyA: "left",
   ArrowRight: "right", KeyD: "right",
   Space: "jump", ArrowUp: "jump", KeyW: "jump",
+  ShiftLeft: "dash", ShiftRight: "dash",
 };
 
 window.addEventListener("keydown", (event) => {
@@ -712,32 +807,45 @@ window.addEventListener("keydown", (event) => {
   if (event.target instanceof Element && event.target.closest("a, button") && event.code === "Space") return;
   event.preventDefault();
   keys.add(input);
-  if (input === "jump" && !event.repeat) jumpQueued = true;
+  if (event.repeat) return;
+  if (input === "jump") jumpQueued = true;
+  if (input === "dash") beginDash();
 });
-window.addEventListener("keyup", (event) => keys.delete(keyboard[event.code]));
+window.addEventListener("keyup", (event) => {
+  const input = keyboard[event.code];
+  if (keys.delete(input) && input === "dash" && !isHeld("dash")) launchDash();
+});
 window.addEventListener("blur", clearInput);
 
 for (const button of controlButtons) {
   const input = button.dataset.input;
   button.addEventListener("pointerdown", (event) => {
-    if (state !== "playing" || (event.pointerType !== "touch" && event.button !== 0)) return;
+    if (state !== "playing" || pointers.has(input) || (event.pointerType !== "touch" && event.button !== 0)) return;
     event.preventDefault();
     button.setPointerCapture(event.pointerId);
     pointers.set(input, event.pointerId);
     button.classList.add("active");
     if (input === "jump") jumpQueued = true;
+    if (input === "dash") beginDash();
   });
   for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) {
     button.addEventListener(type, (event) => {
       if (pointers.get(input) !== event.pointerId) return;
       pointers.delete(input);
       button.classList.remove("active");
+      if (input === "dash" && !isHeld("dash")) {
+        if (type === "pointerup") launchDash();
+        else cancelDash();
+      }
     });
   }
   button.addEventListener("click", (event) => {
     if (event.detail || state !== "playing") return;
     if (input === "jump") {
       jumpQueued = true;
+    } else if (input === "dash") {
+      beginDash();
+      launchDash();
     } else {
       player.facing = input === "right" ? 1 : -1;
       player.vx = player.facing * 98;
@@ -749,8 +857,9 @@ byId("sound").addEventListener("click", () => {
   soundOn = !soundOn;
   byId("sound").setAttribute("aria-pressed", String(soundOn));
   byId("sound").setAttribute("aria-label", soundOn ? "Desligar som" : "Ativar som");
-  if (soundOn && state === "playing") playAudio(music);
-  if (!soundOn) {
+  if (soundOn) {
+    keepMusicPlaying();
+  } else {
     music.pause();
     Object.values(sounds).forEach((effect) => effect.pause());
   }
@@ -758,13 +867,18 @@ byId("sound").addEventListener("click", () => {
 
 document.addEventListener("visibilitychange", () => {
   clearInput();
-  if (document.hidden) music.pause();
-  else if (state === "playing") playAudio(music);
+  if (!document.hidden && state !== "intro") keepMusicPlaying();
 });
 arcade.addEventListener("contextmenu", (event) => {
   if (event.target instanceof Element && event.target.closest("#controls, #stage")) event.preventDefault();
 });
-byId("skip").addEventListener("click", () => showResult(false));
+byId("skip").addEventListener("click", () => {
+  keepMusicPlaying();
+  showResult(false);
+});
+byId("gifts").addEventListener("click", () => {
+  byId("gift-panel").showModal();
+});
 byId("start").addEventListener("click", start);
 byId("replay").addEventListener("click", start);
 

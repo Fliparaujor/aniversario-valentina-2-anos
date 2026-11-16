@@ -5,8 +5,9 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 UID:josue-20261122@fliparaujor.github.io
-DTSTAMP:20261116T210000Z
-DTSTART:20261122T203000Z
+DTSTAMP:20261116T220338Z
+SEQUENCE:1
+DTSTART:20261122T200000Z
 SUMMARY:Aniversário do Josué
 LOCATION:Praça do Meio do Mundo\, Macapá - AP
 URL:https://fliparaujor.github.io/aniversario-valentina-2-anos/josue/
