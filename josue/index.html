@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Aniversário do Josué · Green Hill Zone</title>
+  <title>Aniversário do Josué · Sonic</title>
   <meta name="description" content="Corra com o Sonic pela Green Hill Zone e descubra o convite do aniversário do Josué.">
   <meta name="theme-color" content="#09142c">
   <meta name="robots" content="noindex, nofollow">
@@ -19,87 +19,72 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://fliparaujor.github.io/aniversario-valentina-2-anos/josue/">
   <link rel="icon" href="assets/icone.png" type="image/png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="fase.css">
-  <script src="fase.js" defer></script>
+  <link rel="preload" href="assets/bitcount.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="fase.css?v=2">
+  <script src="fase.js?v=2" defer></script>
 </head>
 <body>
-  <main id="arcade" class="arcade" data-state="intro">
-    <header class="masthead">
-      <div class="wordmark" aria-label="Sonic">SONIC<span aria-hidden="true"></span></div>
-      <button class="sound" id="sound" type="button" aria-pressed="false" aria-label="Ativar som">
-        <span class="music-note" aria-hidden="true">♫</span>
-        <span id="sound-text">Som desligado</span>
-      </button>
-    </header>
+  <main class="arcade" id="arcade" data-state="intro">
+    <canvas id="stage" width="224" height="394" tabindex="-1" aria-label="Fase do Sonic. Use os controles na tela para correr e pular."></canvas>
 
-    <div class="machine">
-      <section class="screen" aria-label="Green Hill Zone">
-        <canvas id="stage" width="400" height="224" tabindex="-1" aria-label="Fase do Sonic. Use as setas para correr e Espaço para pular."></canvas>
-
-        <div id="intro" class="intro">
-          <p class="eyebrow intro-eyebrow"><span aria-hidden="true"></span>Convite jogável</p>
-          <h1 class="game-title"><span>Green Hill</span> <em>Zone</em></h1>
-          <p class="mission">Pegue as quatro argolas para descobrir o convite.</p>
-          <button class="button primary start" id="start" type="button">Começar fase <span aria-hidden="true">▶</span></button>
+    <div class="game-bar">
+      <div class="wordmark" aria-label="Sonic">SONIC</div>
+      <div class="hud" id="hud" hidden>
+        <i class="hud-ring" aria-hidden="true"></i>
+        <div class="hud-info">
+          <span class="hud-label">Argolas</span>
+          <div class="hud-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         </div>
-
-        <div class="hud" id="hud" hidden>
-          <div class="hud-ring" aria-hidden="true"></div>
-          <div>
-            <span class="hud-label">ARGOLAS</span>
-            <div class="hud-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-          </div>
-          <output id="ring-count" aria-label="Argolas coletadas">0/4</output>
-        </div>
-
-        <div class="clue" id="clue" aria-live="polite" aria-atomic="true">
-          <span id="clue-label" class="eyebrow"></span>
-          <strong id="clue-text"></strong>
-        </div>
-
-        <section class="result" id="result" aria-labelledby="event-title" hidden>
-          <p class="eyebrow result-kicker" id="result-kicker">Fase concluída!</p>
-          <h2 id="event-title" tabindex="-1">Aniversário do <strong>Josué</strong></h2>
-          <dl class="event-details">
-            <div>
-              <dt>Dia</dt>
-              <dd><time datetime="2026-11-22">Domingo, 22/11</time></dd>
-            </div>
-            <div>
-              <dt>Hora</dt>
-              <dd><time datetime="2026-11-22T17:30:00-03:00">17h30</time></dd>
-            </div>
-            <div class="location">
-              <dt>Local</dt>
-              <dd>Praça do Meio do Mundo <span>Macapá, AP</span></dd>
-            </div>
-          </dl>
-        </section>
-      </section>
-
-      <div class="deck">
-        <div id="help" class="help">
-          <p class="desktop-hint"><kbd>←</kbd> <kbd>→</kbd> para correr <span class="divider">·</span> <kbd>Espaço</kbd> para pular</p>
-          <p class="touch-hint">Corra e pule com os botões da tela.</p>
-        </div>
-        <div class="controller" id="controls" hidden>
-          <div class="direction">
-            <button type="button" class="control arrow" data-input="left" aria-label="Correr para a esquerda">←</button>
-            <button type="button" class="control arrow" data-input="right" aria-label="Correr para a direita">→</button>
-          </div>
-          <p class="desktop-hint"><kbd>←</kbd> <kbd>→</kbd> <span class="divider">·</span> <kbd>Espaço</kbd></p>
-          <button type="button" class="control jump" data-input="jump" aria-label="Pular">Pular <span aria-hidden="true">↑</span></button>
-        </div>
-        <button class="plain skip" id="skip" type="button">Ver convite sem jogar <span aria-hidden="true">↗</span></button>
-        <div id="actions" class="result-actions" hidden>
-          <a class="button primary" href="https://www.google.com/maps/search/?api=1&amp;query=Parque%20Meio%20do%20Mundo%2C%20Macap%C3%A1%20AP" target="_blank" rel="noopener noreferrer">Abrir mapa <span aria-hidden="true">↗</span></a>
-          <a class="button secondary" href="aniversario-do-josue.ics" download>Salvar na agenda</a>
-          <button class="plain replay" id="replay" type="button">Jogar de novo <span aria-hidden="true">↻</span></button>
-        </div>
+        <output id="ring-count" aria-label="Argolas coletadas">0/4</output>
       </div>
+      <div class="game-tools">
+        <button class="icon-button" id="sound" type="button" aria-pressed="false" aria-label="Ativar som" title="Som">
+          <span aria-hidden="true">♫</span>
+        </button>
+        <button class="icon-button fullscreen" id="full" type="button" aria-pressed="false" aria-label="Tela cheia" title="Tela cheia">
+          <span class="fullscreen-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <section class="intro" id="intro" aria-labelledby="opening-title">
+      <div class="intro-copy">
+        <p class="zone"><i aria-hidden="true"></i>Green Hill Zone</p>
+        <h1 id="opening-title"><span>Aniversário do</span><strong>Josué</strong></h1>
+        <p class="mission">Corra com o Sonic e pegue as argolas para descobrir os detalhes da festa.</p>
+      </div>
+      <button class="button primary start" id="start" type="button"><span>Jogar</span><i class="play-arrow" aria-hidden="true"></i></button>
+    </section>
+
+    <button class="skip" id="skip" type="button">Ver convite <span aria-hidden="true">↗</span></button>
+
+    <div class="clue" id="clue" aria-live="polite" aria-atomic="true">
+      <span id="clue-label" class="clue-label"></span>
+      <strong id="clue-text"></strong>
+    </div>
+
+    <div class="controller" id="controls" aria-label="Controles de toque" hidden>
+      <div class="direction">
+        <button type="button" class="control arrow left" data-input="left" aria-label="Correr para a esquerda"><i aria-hidden="true"></i></button>
+        <button type="button" class="control arrow right" data-input="right" aria-label="Correr para a direita"><i aria-hidden="true"></i></button>
+      </div>
+      <button type="button" class="control jump" data-input="jump" aria-label="Pular"><i aria-hidden="true"></i><span>Pular</span></button>
+    </div>
+
+    <section class="result" id="result" aria-labelledby="event-title" hidden>
+      <p class="result-kicker" id="result-kicker">Fase concluída!</p>
+      <h2 id="event-title" tabindex="-1"><span>Aniversário do</span><strong>Josué</strong></h2>
+      <dl class="event-details">
+        <div><dt>Dia</dt><dd><time datetime="2026-11-22">Domingo, 22/11</time></dd></div>
+        <div><dt>Hora</dt><dd><time datetime="2026-11-22T17:30:00-03:00">17h30</time></dd></div>
+        <div class="location"><dt>Local</dt><dd>Praça do Meio do Mundo <span>Macapá, AP</span></dd></div>
+      </dl>
+    </section>
+
+    <div id="actions" class="result-actions" hidden>
+      <a class="button primary" href="https://www.google.com/maps/search/?api=1&amp;query=Parque%20Meio%20do%20Mundo%2C%20Macap%C3%A1%20AP" target="_blank" rel="noopener noreferrer">Abrir mapa <span aria-hidden="true">↗</span></a>
+      <a class="button secondary" href="aniversario-do-josue.ics" download>Salvar na agenda</a>
+      <button class="replay" id="replay" type="button">Jogar de novo <span aria-hidden="true">↻</span></button>
     </div>
 
     <noscript>
@@ -111,7 +96,6 @@
         <a class="button primary" href="https://www.google.com/maps/search/?api=1&amp;query=Parque%20Meio%20do%20Mundo%2C%20Macap%C3%A1%20AP">Abrir mapa ↗</a>
       </article>
     </noscript>
-    <footer class="credit">Sonic the Hedgehog © SEGA</footer>
   </main>
 </body>
 </html>

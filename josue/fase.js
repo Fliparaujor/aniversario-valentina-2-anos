@@ -31,28 +31,52 @@ const CLUES = [
 ];
 
 const HEIGHT = 224;
-const FINISH = 2635;
-const WORLD_END = 3230;
+const MIN_VIEW_WIDTH = 224;
+const PARK_START = 2260;
+const PAVING_START = 2652;
+const FINISH = 2744;
+const GOAL_POST = FINISH - 53;
+const WORLD_END = 3500;
 const TERRAIN = [
   [0, 192], [230, 192], [340, 179], [514, 179], [642, 195],
   [802, 195], [916, 177], [1100, 177], [1305, 196], [1452, 196],
   [1588, 181], [1770, 181], [1896, 167], [2118, 167], [2262, 191],
-  [2475, 191], [2584, 188], [WORLD_END, 188],
+  [2330, 187], [WORLD_END, 187],
 ];
 const LEDGES = [
   { x: 755, width: 95, y: 161 },
   { x: 1195, width: 66, y: 144 },
   { x: 1770, width: 83, y: 138 },
-  { x: 2288, width: 70, y: 158 },
 ];
 const PLANTS = [
   [119, "palm"], [181, "flower"], [263, "sunflower"], [350, "smallPalm"],
   [573, "flower"], [645, "palm"], [702, "sunflower"], [849, "smallPalm"],
   [1025, "palm"], [1086, "flower"], [1296, "smallPalm"], [1360, "palm"],
   [1433, "sunflower"], [1581, "flower"], [1667, "palm"], [1761, "flower"],
-  [1958, "smallPalm"], [2068, "palm"], [2249, "sunflower"], [2375, "palm"],
-  [2483, "flower"], [2573, "palm"], [2863, "smallPalm"], [2945, "flower"],
-  [3035, "palm"], [3178, "sunflower"],
+  [1958, "smallPalm"], [2068, "palm"], [2232, "sunflower"],
+];
+const PARK_ART = {
+  monument: [8, 5, 40, 135],
+  letters: [57, 35, 166, 52],
+  playground: [236, 14, 117, 94],
+  macaw: [12, 146, 71, 91],
+  turtle: [110, 160, 70, 74],
+  birds: [215, 160, 76, 72],
+};
+const PARK_OBJECTS = [
+  { x: 2841, sprite: "monument", scale: .94, setback: 19 },
+  { x: 2333, sprite: "birds", scale: .74, setback: 12 },
+  { x: 2460, sprite: "playground", scale: 1.2, setback: 12 },
+  { x: 2569, sprite: "turtle", scale: .84, setback: 10 },
+  { x: 2656, sprite: "macaw", scale: .86, setback: 14 },
+  { x: 2790, sprite: "letters", scale: 1, setback: 20 },
+  { x: 2960, sprite: "birds", scale: .68, setback: 15 },
+];
+const PARK_LAMPS = [2293, 2398, 2616, 2701, 2895, 3051, 3244, 3399];
+const PARK_SKY = [
+  "#111746", "#1a215b", "#282a70", "#3b337f",
+  "#573986", "#714589", "#91518e", "#b96796",
+  "#d48098", "#ef9b9b", "#f7b699", "#ffd1a0",
 ];
 const POSES = {
   idle: [0, 0, 0, 0, 0, 1, 2, 3, 4, 3, 2, 1],
@@ -88,6 +112,8 @@ const atlas = new Image();
 atlas.src = "assets/atlas.png";
 const landscape = new Image();
 landscape.src = "assets/green-hill.png";
+const parkAtlas = new Image();
+parkAtlas.src = "assets/praca-sprites.png";
 
 function soundFile(path, volume, loop = false) {
   const audio = new Audio(path);
@@ -163,7 +189,6 @@ function setState(next) {
   state = next;
   arcade.dataset.state = next;
   byId("intro").hidden = next !== "intro";
-  byId("help").hidden = next !== "intro";
   controls.hidden = next !== "playing";
   hud.hidden = !["playing", "celebrating"].includes(next);
   byId("skip").hidden = !["intro", "playing"].includes(next);
@@ -178,6 +203,7 @@ function playAudio(audio, restart = false) {
 }
 
 function start() {
+  enterFullscreen();
   resetPlayer();
   byId("clue").classList.remove("show");
   byId("clue-label").textContent = "";
@@ -224,7 +250,7 @@ function showResult(completed) {
     player.y = floorAt(player.x);
     player.vx = 0;
     player.base = "floor";
-    camera = clamp(player.x - stage.width * .75, 0, WORLD_END - stage.width);
+    camera = cameraTarget(.69);
     finishTime = 3;
     burstIndex = FIREWORKS.length;
     music.pause();
@@ -302,24 +328,26 @@ function update(dt) {
       player.base = "floor";
       player.vx = travel < 1 ? 113 * (1 - travel) : 0;
       player.animation += dt * (player.vx ? 13 : 3);
-      if (finishTime >= 1.45) showResult(true);
+      if (finishTime >= 2.35) showResult(true);
     }
     while (burstIndex < FIREWORKS.length && FIREWORKS[burstIndex].t <= finishTime) {
       const burst = FIREWORKS[burstIndex++];
-      burst.actualTime = finishTime;
-      if (!reducedMotion) bursts.push(burst);
+      if (!reducedMotion) bursts.push({ ...burst, actualTime: finishTime });
     }
     bursts = bursts.filter((burst) => finishTime - burst.actualTime < 1.24);
   }
 
-  const offset = state === "playing" ? .35 : .75;
-  const target = clamp(player.x - stage.width * offset, 0, WORLD_END - stage.width);
-  const cameraSpeed = state === "playing" ? 10 : 5;
-  if (state !== "intro") camera += (target - camera) * Math.min(1, dt * cameraSpeed);
+  const offset = state === "playing" ? .33 : .69;
+  const speed = state === "playing" ? 10 : 5;
+  if (state !== "intro") camera += (cameraTarget(offset) - camera) * Math.min(1, dt * speed);
 }
 
-function sprite(frame, x, y, scale = 1, mirrored = false) {
-  if (!frame || !atlas.naturalWidth) return;
+function cameraTarget(offset) {
+  return clamp(player.x - stage.width * offset, 0, Math.max(0, WORLD_END - stage.width));
+}
+
+function sprite(frame, x, y, scale = 1, mirrored = false, sheet = atlas) {
+  if (!frame || !sheet.naturalWidth) return;
   const [sx, sy, width, height] = frame;
   const left = Math.round(x - width * scale / 2);
   const top = Math.round(y - height * scale);
@@ -327,25 +355,132 @@ function sprite(frame, x, y, scale = 1, mirrored = false) {
     canvas.save();
     canvas.translate(left + Math.round(width * scale), top);
     canvas.scale(-1, 1);
-    canvas.drawImage(atlas, sx, sy, width, height, 0, 0, Math.round(width * scale), Math.round(height * scale));
+    canvas.drawImage(sheet, sx, sy, width, height, 0, 0, Math.round(width * scale), Math.round(height * scale));
     canvas.restore();
     return;
   }
-  canvas.drawImage(atlas, sx, sy, width, height, left, top, Math.round(width * scale), Math.round(height * scale));
+  canvas.drawImage(sheet, sx, sy, width, height, left, top, Math.round(width * scale), Math.round(height * scale));
 }
 
-function background(cam) {
-  canvas.fillStyle = "#217ce9";
-  canvas.fillRect(0, 0, stage.width, HEIGHT);
-  if (!landscape.naturalWidth) return;
-  const span = landscape.naturalWidth;
-  const skyline = Math.floor(cam * .21) % span;
-  const water = Math.floor(cam * .38) % span;
-  for (let x = -skyline; x < stage.width; x += span) {
-    canvas.drawImage(landscape, 0, 0, span, 153, x, 0, span, 153);
+function background(cam, offset) {
+  const width = stage.width;
+  const upperSky = Math.max(1, offset + 4);
+  const skyColors = ["#1856c8", "#195ed1", "#1d6ddd", "#2080ed", "#2192f7"];
+  skyColors.forEach((color, n) => {
+    const start = Math.floor(n * upperSky / skyColors.length);
+    const end = Math.ceil((n + 1) * upperSky / skyColors.length);
+    canvas.fillStyle = color;
+    canvas.fillRect(0, start, width, end - start);
+  });
+  canvas.fillStyle = skyColors.at(-1);
+  canvas.fillRect(0, upperSky, width, stage.height - upperSky);
+  if (landscape.naturalWidth) {
+    const span = landscape.naturalWidth;
+    const skyline = Math.floor(cam * .21) % span;
+    const water = Math.floor(cam * .38) % span;
+    for (let x = -skyline; x < width; x += span) {
+      canvas.drawImage(landscape, 0, 0, span, 153, x, offset, span, 153);
+    }
+    for (let x = -water; x < width; x += span) {
+      canvas.drawImage(landscape, 0, 153, span, HEIGHT - 153, x, offset + 153, span, HEIGHT - 153);
+    }
   }
-  for (let x = -water; x < stage.width; x += span) {
-    canvas.drawImage(landscape, 0, 153, span, HEIGHT - 153, x, 153, span, HEIGHT - 153);
+
+  const blend = clamp((cam + width * .54 - PARK_START + 55) / 152, 0, 1);
+  if (blend > 0) {
+    canvas.save();
+    canvas.globalAlpha = blend;
+    drawParkSky(cam, offset);
+    canvas.restore();
+  }
+}
+
+function drawParkSky(cam, offset) {
+  const width = stage.width;
+  const horizon = Math.round(offset + 154);
+  for (let n = 0; n < PARK_SKY.length; n++) {
+    const start = Math.floor(n * horizon / PARK_SKY.length);
+    const end = Math.ceil((n + 1) * horizon / PARK_SKY.length);
+    canvas.fillStyle = PARK_SKY[n];
+    canvas.fillRect(0, start, width, end - start);
+  }
+  canvas.fillStyle = "#5b9561";
+  canvas.fillRect(0, horizon, width, stage.height - horizon);
+  canvas.fillStyle = "#42685d";
+  canvas.fillRect(0, horizon - 5, width, 6);
+  canvas.fillStyle = "#aec776";
+  canvas.fillRect(0, horizon + 1, width, 3);
+
+  const drift = Math.floor(cam * .18) % 126;
+  const season = [45, 72, 48, 57, 37];
+  for (let x = -drift - 40, n = 0; x < width + 65; x += 126, n++) {
+    const y = Math.round(horizon * .61 + season[n % season.length] * .43);
+    canvas.fillStyle = "#ba698f";
+    canvas.fillRect(x, y, 60, 5);
+    canvas.fillRect(x + 16, y - 4, 28, 7);
+    canvas.fillStyle = "#f4aca1";
+    canvas.fillRect(x + 6, y - 3, 47, 3);
+    canvas.fillRect(x + 17, y - 6, 24, 3);
+  }
+
+  const foliage = Math.floor(cam * .39) % 27;
+  for (let x = -foliage - 27, n = Math.floor(cam * .39 / 27); x < width; x += 27, n++) {
+    const lift = 3 + (n * 7 % 12);
+    canvas.fillStyle = "#475261";
+    canvas.fillRect(x + 3, horizon - lift, 18, lift);
+    canvas.fillRect(x + 7, horizon - lift - 4, 11, 5);
+    canvas.fillStyle = "#597269";
+    canvas.fillRect(x, horizon - 4, 24, 5);
+    canvas.fillRect(x + 5, horizon - lift + 3, 19, 5);
+  }
+}
+
+function parkSurface(x, y, width, height, worldX) {
+  const top = Math.round(y);
+  if (worldX < PAVING_START) {
+    canvas.fillStyle = worldX % 28 < 14 ? "#52963a" : "#4b8a36";
+    canvas.fillRect(x, top, width, height - top);
+    canvas.fillStyle = worldX % 16 < 8 ? "#7ed64a" : "#6ab83d";
+    canvas.fillRect(x, top, width, 5);
+    canvas.fillStyle = "#407f32";
+    canvas.fillRect(x, top + 11, width, 3);
+    return;
+  }
+
+  canvas.fillStyle = "#dec4a5";
+  canvas.fillRect(x, top, width, 3);
+  const slabs = ["#93879a", "#a99ba7", "#a193a0", "#b3a3a5"];
+  const seam = "#6f657f";
+  for (let row = 0, destY = top + 3; destY < height; destY += 12, row++) {
+    const slab = worldX + row % 2 * 14;
+    canvas.fillStyle = slabs[(Math.floor(slab / 24) + row) % slabs.length];
+    canvas.fillRect(x, destY, width, 11);
+    canvas.fillStyle = seam;
+    canvas.fillRect(x, destY + 11, width, 1);
+    if (slab % 24 < 4) canvas.fillRect(x, destY, 1, 11);
+  }
+  if (worldX >= 2810 && worldX < 2818) {
+    canvas.fillStyle = "#51435f";
+    canvas.fillRect(x, top + 1, width, height - top);
+    canvas.fillStyle = "#ffdf92";
+    canvas.fillRect(x, top + 1, 1, height - top);
+  }
+}
+
+function drawParkLamps(cam, viewEnd) {
+  for (const worldX of PARK_LAMPS) {
+    if (worldX < cam - 18 || worldX > viewEnd) continue;
+    const x = Math.round(worldX - cam);
+    const y = 173 + (worldX % 4);
+    canvas.fillStyle = "#3c4265";
+    canvas.fillRect(x, y - 49, 2, 49);
+    canvas.fillRect(x - 7, y - 53, 16, 2);
+    canvas.fillStyle = "#f6c78f";
+    canvas.fillRect(x - 9, y - 53, 6, 2);
+    canvas.fillRect(x + 6, y - 53, 6, 2);
+    canvas.fillStyle = "#fff1bf";
+    canvas.fillRect(x - 8, y - 53, 4, 1);
+    canvas.fillRect(x + 7, y - 53, 4, 1);
   }
 }
 
@@ -367,9 +502,12 @@ function terrainStrip(x, y, width, height, textureOffset) {
   }
 }
 
-function drawWorld(cam) {
-  background(cam);
-  const viewEnd = cam + stage.width + 60;
+function drawWorld(cam, offset) {
+  background(cam, offset);
+  canvas.save();
+  canvas.translate(0, offset);
+  const viewEnd = cam + stage.width + 68;
+  const height = stage.height - offset;
 
   const loopX = 1248;
   if (loopX > cam - 100 && loopX < viewEnd) {
@@ -381,6 +519,14 @@ function drawWorld(cam) {
       sprite(ART.world[plant], x - cam, floorAt(x) + 4, scale);
     }
   }
+  if (viewEnd >= PARK_START) {
+    drawParkLamps(cam, viewEnd);
+    for (const { x, sprite: name, scale, setback } of PARK_OBJECTS) {
+      if (x + 90 < cam || x - 25 > viewEnd) continue;
+      sprite(PARK_ART[name], x - cam, floorAt(x) - setback, scale, false, parkAtlas);
+    }
+  }
+
   for (const ledge of LEDGES) {
     if (ledge.x + ledge.width < cam || ledge.x >= viewEnd) continue;
     for (let step = 0; step < ledge.width; step += 4) {
@@ -388,10 +534,12 @@ function drawWorld(cam) {
         Math.min(4, ledge.width - step), ledge.y + 22, step);
     }
   }
-
   for (let x = Math.floor(cam / 4) * 4; x < cam + stage.width; x += 4) {
-    terrainStrip(Math.round(x - cam), floorAt(x + 2), 4, HEIGHT, x);
+    const y = floorAt(x + 2);
+    if (x < PARK_START) terrainStrip(Math.round(x - cam), y, 4, height, x);
+    else parkSurface(Math.round(x - cam), y, 4, height, x);
   }
+  canvas.restore();
 }
 
 function drawRing(x, y, animation = clock, scale = 2) {
@@ -445,12 +593,12 @@ function drawPlayer(x, y, zoom = 1, intro = false) {
 }
 
 function drawSign(cam) {
-  const x = FINISH - cam;
+  const x = GOAL_POST - cam;
   if (x < -30 || x > stage.width + 30) return;
   let frame = 0;
   if (finishTime >= .88) frame = 3;
   else if (finishTime) frame = SIGN_FRAMES[Math.floor(finishTime * 17) % SIGN_FRAMES.length];
-  sprite(ART.sign[frame], x, floorAt(FINISH) + 1);
+  sprite(ART.sign[frame], x, floorAt(GOAL_POST) + 1, .83);
 }
 
 function drawBursts() {
@@ -458,7 +606,7 @@ function drawBursts() {
     const age = finishTime - burst.actualTime;
     const width = stage.width;
     const x = width * burst.x;
-    const y = burst.y + age * age * 18;
+    const y = Math.max(12, Math.round(stage.height * .05)) + burst.y * .88 + age * age * 18;
     canvas.globalAlpha = clamp(1 - age * .82, 0, 1);
     for (let n = 0; n < 23; n++) {
       const angle = n * Math.PI * 2 / 23;
@@ -472,31 +620,85 @@ function drawBursts() {
 }
 
 function draw() {
+  const reserve = clamp(Math.round(stage.height * .071), 17, 29);
+  const offset = stage.height - HEIGHT - reserve;
+
   if (state === "intro") {
-    drawWorld(76);
-    const heroX = stage.width * (stage.width < 285 ? .64 : .76);
-    const ground = floorAt(76 + heroX);
-    drawRing(heroX - 44, ground - 58, clock + .3, 1.35);
-    drawRing(heroX + 43, ground - 82, clock + .5, 1.35);
-    drawRing(heroX + 74, ground - 49, clock + .7, 1.35);
-    drawPlayer(heroX, ground, 1.8, true);
+    const introCamera = 76;
+    drawWorld(introCamera, offset);
+    canvas.save();
+    canvas.translate(0, offset);
+    const heroX = stage.width * (stage.height > stage.width ? .55 : .76);
+    const ground = floorAt(introCamera + heroX);
+    drawRing(heroX - 53, ground - 62, clock + .3, 1.35);
+    drawRing(heroX + 47, ground - 92, clock + .5, 1.35);
+    drawRing(heroX + 70, ground - 45, clock + .7, 1.35);
+    drawPlayer(heroX, ground, stage.height > stage.width ? 2.2 : 1.85, true);
+    canvas.restore();
     return;
   }
+
   const cam = Math.round(camera);
-  drawWorld(cam);
+  drawWorld(cam, offset);
+  canvas.save();
+  canvas.translate(0, offset);
   drawClues(cam);
   drawSign(cam);
   drawPlayer(player.x - cam, player.y);
+  canvas.restore();
   drawBursts();
 }
 
 function sizeStage() {
   const { width, height } = stage.getBoundingClientRect();
-  if (!height) return;
-  const logicalWidth = Math.round(HEIGHT * width / height);
+  if (!(width > 0 && height > 0)) return;
+  const ratio = width / height;
+  const logicalWidth = Math.max(MIN_VIEW_WIDTH, Math.round(HEIGHT * ratio));
+  const logicalHeight = Math.max(HEIGHT, Math.round(logicalWidth / ratio));
   if (stage.width !== logicalWidth) stage.width = logicalWidth;
+  if (stage.height !== logicalHeight) stage.height = logicalHeight;
   canvas.imageSmoothingEnabled = false;
 }
+
+function fullscreenElement() {
+  return document.fullscreenElement || document.webkitFullscreenElement;
+}
+
+function enterFullscreen() {
+  if (fullscreenElement()) return;
+  try {
+    if (arcade.requestFullscreen) {
+      arcade.requestFullscreen({ navigationUI: "hide" })?.catch(() => {});
+    } else {
+      arcade.webkitRequestFullscreen?.();
+    }
+  } catch {
+    // The game already fills the available viewport in embedded browsers.
+  }
+}
+
+const fullscreenButton = byId("full");
+fullscreenButton.hidden = !(arcade.requestFullscreen || arcade.webkitRequestFullscreen)
+  || (document.fullscreenEnabled === false && !document.webkitFullscreenEnabled);
+fullscreenButton.addEventListener("click", () => {
+  if (!fullscreenElement()) {
+    enterFullscreen();
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen()?.catch(() => {});
+  } else {
+    document.webkitExitFullscreen?.();
+  }
+});
+
+function onFullscreenChange() {
+  const active = Boolean(fullscreenElement());
+  fullscreenButton.setAttribute("aria-pressed", String(active));
+  fullscreenButton.setAttribute("aria-label", active ? "Sair da tela cheia" : "Tela cheia");
+  sizeStage();
+}
+document.addEventListener("fullscreenchange", onFullscreenChange);
+document.addEventListener("webkitfullscreenchange", onFullscreenChange);
+window.visualViewport?.addEventListener("resize", sizeStage);
 
 const keyboard = {
   ArrowLeft: "left", KeyA: "left",
@@ -518,7 +720,7 @@ window.addEventListener("blur", clearInput);
 for (const button of controlButtons) {
   const input = button.dataset.input;
   button.addEventListener("pointerdown", (event) => {
-    if (state !== "playing" || event.button !== 0) return;
+    if (state !== "playing" || (event.pointerType !== "touch" && event.button !== 0)) return;
     event.preventDefault();
     button.setPointerCapture(event.pointerId);
     pointers.set(input, event.pointerId);
@@ -533,7 +735,13 @@ for (const button of controlButtons) {
     });
   }
   button.addEventListener("click", (event) => {
-    if (!event.detail && input === "jump" && state === "playing") jumpQueued = true;
+    if (event.detail || state !== "playing") return;
+    if (input === "jump") {
+      jumpQueued = true;
+    } else {
+      player.facing = input === "right" ? 1 : -1;
+      player.vx = player.facing * 98;
+    }
   });
 }
 
@@ -541,7 +749,6 @@ byId("sound").addEventListener("click", () => {
   soundOn = !soundOn;
   byId("sound").setAttribute("aria-pressed", String(soundOn));
   byId("sound").setAttribute("aria-label", soundOn ? "Desligar som" : "Ativar som");
-  byId("sound-text").textContent = soundOn ? "Som ligado" : "Som desligado";
   if (soundOn && state === "playing") playAudio(music);
   if (!soundOn) {
     music.pause();
@@ -553,6 +760,9 @@ document.addEventListener("visibilitychange", () => {
   clearInput();
   if (document.hidden) music.pause();
   else if (state === "playing") playAudio(music);
+});
+arcade.addEventListener("contextmenu", (event) => {
+  if (event.target instanceof Element && event.target.closest("#controls, #stage")) event.preventDefault();
 });
 byId("skip").addEventListener("click", () => showResult(false));
 byId("start").addEventListener("click", start);
